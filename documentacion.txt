@@ -1,0 +1,11 @@
+
+-> $(grep '^JUGADORES=' config.cfg)
+
+En este caso la funcion grep busca en el archivo config.cfg la linea que comienza (^) con 'JUGADORES='
+
+-> sed -i "s/^JUGADORES=.*/JUGADORES=$nuevo_jugadores/" config.cfg 
+
+Utilizamos la funcion sed (stream editor) con el argumento -i (in site) para editar el fichero en la posicion que indiquemos.
+/s (substitute) substituye la linea que comienza (^) con 'JUGADORES=' y que contenga cualquier caracter (.*)
+por 'JUGADORES=$nuevo_jugadores' donde $nuevo_jugadores es la variable que contiene el numero de jugadores que hemos introducido.
+todo ello aplicado al fichero config.cfg.  
