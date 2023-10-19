@@ -25,6 +25,14 @@ function mostrarMenu
 
 }
 
+function crearDefault
+{
+    echo "JUGADORES=2" > config.cfg
+    echo "ESTRATEGIA=0" >> config.cfg
+    echo LOG=./log/fichero.log >> config.cfg     
+    echo "Archivo de configuración creado correctamente, se recomienda modificar sus valores antes de jugar."
+}
+
 function configuracion
 {
 #!/bin/bash
@@ -88,15 +96,12 @@ while true; do
 
             case $opcion_estrategia in
                 0)
-                    clear
                     echo "ESTRATEGIA=0" >> config.cfg
                     ;;
                 1)
-                    clear
                     echo "ESTRATEGIA=1" >> config.cfg
                     ;;
                 2)
-                    clear
                     echo "ESTRATEGIA=2" >> config.cfg
                     ;;
                 *)
@@ -121,9 +126,10 @@ while true; do
 done
          
 }
+
+
 function Comprobaciones
 {
-
 while [ ! -f "config.cfg" ] || [ ! -s "config.cfg"  ]     #-f comprueba si es un archivo y -s si esta vacio
 do                
         echo "El archivo de configuración 'config.cfg' no se ha encontrado en este directorio o esta vacio."
@@ -135,10 +141,7 @@ do
         case $opcion in
             1)  
                 clear
-                echo "JUGADORES=2" > config.cfg
-                echo "ESTRATEGIA=0" >> config.cfg
-                echo LOG=./log/fichero.log >> config.cfg     
-                echo "Archivo de configuración creado correctamente, se recomienda modificar sus valores antes de jugar."
+                crearDefault
                 sleep 2          
                 ;;
             2) 
@@ -158,8 +161,8 @@ done
 
 if   ! grep -qE '^JUGADORES=[2-4]$' config.cfg  ||  ! grep -qE '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep -qE '^LOG=.*' config.cfg 
         then
-            echo "El archivo de configuración 'config.cfg' no es correcto."
-            #POSIBLE LLAMADA A CREAR ARCHIVO DE CONFIGURACION POR DEFECTO
+            echo "ERROR: El archivo de configuración 'config.cfg' no es correcto, creando uno DEFAULT"
+            crearDefault
 fi
 }
 
