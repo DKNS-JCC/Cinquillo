@@ -35,8 +35,6 @@ function crearDefault
 
 function configuracion
 {
-#!/bin/bash
-
 while true; do
     clear
     echo "==============================="
@@ -52,68 +50,49 @@ while true; do
 
     case $opcion in
         1)
-            clear
-            echo "==============================="
-            echo "          JUGADORES            "
-            echo "==============================="
-            echo "2) 2 JUGADORES"
-            echo "3) 3 JUGADORES"
-            echo "4) 4 JUGADORES"
-            echo "==============================="
-            echo -n "Introduzca una opción.......... " # -n no hace salto de linea
-            read opcion_jugadores
+            echo "JUGADORES actuales: $(grep '^JUGADORES=' config.cfg)"
+            echo -n "Nuevo número de jugadores (2, 3 o 4): "
+            read nuevo_jugadores
 
-            case $opcion_jugadores in
-                2)
-                    clear
-                    echo "JUGADORES=2" > config.cfg
-                    ;;
-                3)
-                    clear
-                    echo "JUGADORES=3" > config.cfg
-                    ;;
-                4)
-                    clear
-                    echo "JUGADORES=4" > config.cfg
-                    ;;
-                *)
-                    echo "Seleccione 2, 3 o 4."
-                    sleep 1.5
-                    ;;
-            esac
-            ;;
+        #comprueba que el numero de jugadores es 2,3 o 4
+        if [ $nuevo_jugadores -eq 2 ] || [ $nuevo_jugadores -eq 3 ] || [ $nuevo_jugadores -eq 4 ]
+        then
+            #DOCUMENTAR
+            sed -i "s/^JUGADORES=.*/JUGADORES=$nuevo_jugadores/" config.cfg 
+            echo "JUGADORES actualizado a $nuevo_jugadores"
+
+        else
+            echo "Número de jugadores no válido. Debe ser 2, 3 o 4."
+        fi
+        ;;
         2)
-            clear
-            echo "==============================="
-            echo "          ESTRATEGIA           "
-            echo "==============================="
-            echo "0) ESTRATEGIA 0"
-            echo "1) ESTRATEGIA 1"
-            echo "2) ESTRATEGIA 2"
-            echo "==============================="
-            echo -n "Introduzca una opción.......... " # -n no hace salto de linea
-            read opcion_estrategia
+            echo "ESTRATEGIA actual: $(grep '^ESTRATEGIA=' config.cfg)"
+            echo -n "Elegir nueva estrategia (0, 1 o 2): "
+            read nuevo_estrategia
 
-            case $opcion_estrategia in
-                0)
-                    echo "ESTRATEGIA=0" >> config.cfg
-                    ;;
-                1)
-                    echo "ESTRATEGIA=1" >> config.cfg
-                    ;;
-                2)
-                    echo "ESTRATEGIA=2" >> config.cfg
-                    ;;
-                *)
-                    echo "Seleccione 0, 1 o 2."
-                    sleep 1.5
-                    ;;
-            esac
+        
+        if [ $nuevo_estrategia -eq 0 ] || [ $nuevo_estrategia -eq 1 ] || [ $nuevo_estrategia -eq 2 ]
+        then
+            #DOCUMENTAR
+            sed -i "s/^ESTRATEGIA=.*/ESTRATEGIA=$nuevo_estrategia/" config.cfg 
+            echo "ESTRATEGIA actualizada a $nuevo_estrategia"
+
+        else
+            echo "Número de estrategia no válido. Debe ser 0, 1 o 2."
+        fi
             ;;
         3)
-            echo "Seleccione el directorio donde se guardará o se encuentra el registro"
-            read directorio
-            echo "LOG=$directorio" >> config.cfg
+            echo -n "Seleccione la ruta donde se guardará o se encuentra el registro..."
+            read nuevo_directorio
+            if [ ! -d "$nuevo_directorio" ] #comprueba que el directorio existe
+            then
+                echo "ERROR: El directorio no existe o no es correcto."
+                sleep 1.5
+            else
+            #Usar como separador de directorios el caracter # para evitar conflictos con las barras
+            sed -i "s#^LOG=.*#LOG=$nuevo_directorio#" config.cfg 
+            echo "LOG actualizado a $nuevo_directorio"
+            fi
             ;;
         4)
             break
@@ -157,7 +136,7 @@ do
 done
 
 # El siguiente if comprueba que el fichero mantiene el formato esperado para su lectura posterior
-# Si no se cumple, se informa al usuario
+# Si no se cumple, se informa al usuario y crea uno predeterminado
 
 if   ! grep -qE '^JUGADORES=[2-4]$' config.cfg  ||  ! grep -qE '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep -qE '^LOG=.*' config.cfg 
         then
@@ -167,10 +146,11 @@ fi
 }
 
 
-Comprobaciones
+Comprobaciones #Comprobamos que el archivo de configuracion existe y tiene el formato correcto
+
 while true
 do
-    mostrarMenu
+    mostrarMenu #mostramos el menu
     read opcion
 
     case $opcion in
