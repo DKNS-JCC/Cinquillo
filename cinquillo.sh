@@ -161,6 +161,7 @@ then
     echo
     echo "      Estrategia 0 Aleatorio: Los jugadores colocan automaticamente la primera carta que puedan colocar"
     echo "      Estrategia 1 Mayores: Los jugadores colocan la carta de mayor valor que puedan colocar para reducir el numero de puntos restantes al final de la partida"
+    echo "      Estrategia 2 ..."
     echo 
     #-p para que no haga salto de linea
     read -p "Pulse una tecla para continuar..."
