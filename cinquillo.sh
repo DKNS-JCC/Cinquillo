@@ -145,6 +145,27 @@ if   ! grep -qE '^JUGADORES=[2-4]$' config.cfg  ||  ! grep -qE '^ESTRATEGIA=[0-2
 fi
 }
 
+if [ "$1" = "-g" ]
+then
+    echo "      =========================="
+    echo "              DESCRIPCION         "
+    echo "      =========================="
+    echo
+    echo "               AUTORES"
+    echo "      ->Jorge Cuadrado Criado"
+    echo "      ->David Lavado González"
+    echo
+    echo "      =========================="
+    echo "              ESTRATEGIAS       "
+    echo "      =========================="
+    echo
+    echo "      Estrategia 0 Aleatorio: Los jugadores colocan automaticamente la primera carta que puedan colocar"
+    echo "      Estrategia 1 Mayores: Los jugadores colocan la carta de mayor valor que puedan colocar para reducir el numero de puntos restantes al final de la partida"
+    echo 
+    #-p para que no haga salto de linea
+    read -p "Pulse una tecla para continuar..."
+    exit 0
+fi
 
 Comprobaciones #Comprobamos que el archivo de configuracion existe y tiene el formato correcto
 
@@ -180,4 +201,5 @@ do
             ;;
     esac
 done
+
 
