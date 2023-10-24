@@ -2,7 +2,7 @@
 
 function mostrarMenu
 {
-    #AÑADIR CLEAR AQUI
+    clear
     echo "==============================="
     echo "          CINQUILLO           "
     echo "                    .------.  "
@@ -35,7 +35,8 @@ function crearDefault
 
 function configuracion
 {
-while true; do
+while true; 
+do
     clear
     echo "==============================="
     echo "          CONFIGURACION        "
@@ -43,6 +44,7 @@ while true; do
     echo "1) NUMERO JUGADORES"
     echo "2) SELECCIONAR ESTRATEGIA"
     echo "3) SELECCIONAR LOG"
+    echo "5) VER CONFIGURACION"
     echo "4) VOLVER"
     echo "==============================="
     echo -n "Introduzca una opción.......... " # -n no hace salto de linea
@@ -58,7 +60,8 @@ while true; do
         if [ $nuevo_jugadores -eq 2 ] || [ $nuevo_jugadores -eq 3 ] || [ $nuevo_jugadores -eq 4 ]
         then
             #DOCUMENTAR
-            sed -i "s/^JUGADORES=.*/JUGADORES=$nuevo_jugadores/" config.cfg 
+            sed "s/^JUGADORES=.*/JUGADORES=$nuevo_jugadores/" config.cfg 
+            clear
             echo "JUGADORES actualizado a $nuevo_jugadores"
 
         else
@@ -69,12 +72,12 @@ while true; do
             echo "ESTRATEGIA actual: $(grep '^ESTRATEGIA=' config.cfg)"
             echo -n "Elegir nueva estrategia (0, 1 o 2): "
             read nuevo_estrategia
-
         
         if [ $nuevo_estrategia -eq 0 ] || [ $nuevo_estrategia -eq 1 ] || [ $nuevo_estrategia -eq 2 ]
         then
             #DOCUMENTAR
-            sed -i "s/^ESTRATEGIA=.*/ESTRATEGIA=$nuevo_estrategia/" config.cfg 
+            sed "s/^ESTRATEGIA=.*/ESTRATEGIA=$nuevo_estrategia/" config.cfg 
+            clear
             echo "ESTRATEGIA actualizada a $nuevo_estrategia"
 
         else
@@ -87,19 +90,24 @@ while true; do
             if [ ! -d "$nuevo_directorio" ] #comprueba que el directorio existe
             then
                 echo "ERROR: El directorio no existe o no es correcto."
-                sleep 1.5
             else
             #Usar como separador de directorios el caracter # para evitar conflictos con las barras
-            sed -i "s#^LOG=.*#LOG=$nuevo_directorio#" config.cfg 
+            sed "s#^LOG=.*#LOG=$nuevo_directorio#" config.cfg
+            clear 
             echo "LOG actualizado a $nuevo_directorio"
             fi
             ;;
         4)
+            echo "JUGADORES actual: $(grep '^JUGADORES=' config.cfg)"
+            echo "ESTRATEGIA actual: $(grep '^ESTRATEGIA=' config.cfg)"
+            echo "RUTA actual: $(grep '^LOG=' config.cfg)"
+            read -p "Pulse una tecla para continuar..."
+            ;;
+        5)
             break
             ;;
         *)
             echo "Seleccione 1, 2, o 3."
-            sleep 1.5
             ;;
     esac
 done
@@ -121,7 +129,7 @@ do
             1)  
                 clear
                 crearDefault
-                sleep 2          
+                sleep 1          
                 ;;
             2) 
                 echo "Saliendo del juego..."
@@ -138,8 +146,9 @@ done
 # El siguiente if comprueba que el fichero mantiene el formato esperado para su lectura posterior
 # Si no se cumple, se informa al usuario y crea uno predeterminado
 
-if   ! grep -qE '^JUGADORES=[2-4]$' config.cfg  ||  ! grep -qE '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep -qE '^LOG=.*' config.cfg 
+if   ! grep '^JUGADORES=[2-4]$' config.cfg  ||  ! grep '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep -e '^LOG=.*' config.cfg 
         then
+            clear
             echo "ERROR: El archivo de configuración 'config.cfg' no es correcto, creando uno DEFAULT"
             crearDefault
 fi
@@ -178,27 +187,21 @@ do
     case $opcion in
         [Cc]) #caso c o C
             echo "ACCEDIENDO A CONFIGURACION..."
-            sleep 0.5
             configuracion
             ;;
         [Jj]) #caso j o J
             echo "PREPARATE PARA JUGAR..."
-            sleep 0.5
-
             ;;
         [Ee]) #caso e o E
             echo "ACCEDIENDO A ESTADISTICAS..."
-            sleep 0.5
             ;;
         [Ff]) #caso f o F
             echo "ACCEDIENDO A CLASIFICACION..."
-            sleep 0.5
             ;;
         [Ss]) #caso s o S
             exit 0
             ;;
         *) echo "Opcion incorrecta"
-            sleep 0.5
             ;;
     esac
 done
