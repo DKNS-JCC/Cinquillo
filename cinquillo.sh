@@ -131,37 +131,37 @@ function Comprobaciones
 
 function crear_baraja {
 
-    palos=("bastos" "copas" "espadas" "oros")    
-    cartas=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")    
-    baraja=()
+    PALOS=("bastos" "copas" "espadas" "oros")    
+    CARTAS=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")    
+    BARAJA=()
 
-# Llenar la baraja con todas las cartas, @ es para que se lean todos los elementos del array
-    for palo in "${palos[@]}"; 
+# Llenar la BARAJA con todas las cartas, @ es para que se lean todos los elementos del array
+    for palo in "${PALOS[@]}"; 
     do
-        for carta in "${cartas[@]}"; 
+        for CARTAS in "${CARTASs[@]}"; 
         do
-            baraja+=("$carta de $palo")
+            BARAJA+=("$CARTAS de $palo")
         done
     done
 }
 
-# Función para barajar las cartas. 
-#Funcionamiento: se recorre el array de cartas y se intercambia la carta actual con una carta aleatoria
+# Función para BARAJAr las CARTASs. 
+#Funcionamiento: se recorre el array de CARTAS y se intercambia la CARTA actual con una CARTA aleatoria
 function barajar {
     for ((i = 0; i < 40 - 1; i++)); 
     do
         j=$((i + RANDOM % (40 - i)))
-    # Intercambiar las cartas en los índices i y j
-        temp="${baraja[i]}"
-        baraja[i]="${baraja[j]}"
-        baraja[j]="$temp"
+    # Intercambiar las CARTASs en los índices i y j
+        temp="${BARAJA[i]}"
+        BARAJA[i]="${BARAJA[j]}"
+        BARAJA[j]="$temp"
   done
 }
 
 imprimir_baraja_mezclada() {
   echo "Baraja mezclada:"
-  for carta in "${baraja[@]}"; do
-    echo "$carta"
+  for CARTAS in "${BARAJA[@]}"; do
+    echo "$CARTAS"
   done
 }
 function juego {
