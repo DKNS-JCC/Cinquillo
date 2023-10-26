@@ -136,11 +136,11 @@ function crear_baraja {
     BARAJA=()
 
 # Llenar la BARAJA con todas las cartas, @ es para que se lean todos los elementos del array
-    for palo in "${PALOS[@]}"; 
+    for PALO in "${PALOS[@]}"; 
     do
-        for CARTAS in "${CARTASs[@]}"; 
+        for CARTA in "${CARTAS[@]}"; 
         do
-            BARAJA+=("$CARTAS de $palo")
+            BARAJA+=("$CARTA de $PALO")
         done
     done
 }
@@ -158,26 +158,20 @@ function barajar {
   done
 }
 
-imprimir_baraja_mezclada() {
-  echo "Baraja mezclada:"
-  for CARTAS in "${BARAJA[@]}"; do
-    echo "$CARTAS"
-  done
-}
 function juego {
     crear_baraja
     barajar
-    imprimir_baraja_mezclada
+    echo "Baraja mezclada:"
+    for CARTA in "${BARAJA[@]}"; 
+    do
+        echo "$CARTA"
+    done
 }
 
 
 #####################################################################
 ####################### PROGRAMA PRINCIPAL ##########################	
 #####################################################################
-
-
-
-
 
 
 if [ "$1" = "-g" ]
