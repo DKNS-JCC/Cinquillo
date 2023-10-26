@@ -89,9 +89,9 @@ function configuracion
                 then
                     echo "ERROR: El directorio no existe o no es correcto."
                 else
-                    echo $JUGADORES > config.cfg
-                    echo $ESTRATEGIA >> config.cfg
-                    echo $nuevo_directorio >> config.cfg
+                    echo JUGADORES=$JUGADORES > config.cfg
+                    echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
+                    echo LOG=$nuevo_directorio >> config.cfg
                     clear
                     echo "LOG actualizado a $nuevo_directorio"
                 fi
@@ -125,6 +125,43 @@ function Comprobaciones
         exit 0
     fi
 }
+function juego {
+palos=("copas" "espadas" "oros" "bastos")
+cartas=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")
+baraja=()
+
+# Llenar la baraja con todas las cartas, @ es para que se lean todos los elementos del array
+for palo in "${palos[@]}"; 
+do
+  for carta in "${cartas[@]}"; 
+  do
+    baraja+=("$carta de $palo")
+  done
+done
+
+# Función para barajar las cartas. 
+#Funcionamiento: se recorre el array de cartas y se intercambia la carta actual con una carta aleatoria
+
+function barajar {
+    for ((i = 0; i < 40 - 1; i++)); 
+    do
+        j=$((i + RANDOM % (n - i)))
+    # Intercambiar las cartas en los índices i y j
+        temp="${baraja[i]}"
+        baraja[i]="${baraja[j]}"
+        baraja[j]="$temp"
+  done
+}
+}
+
+#####################################################################
+####################### PROGRAMA PRINCIPAL ##########################	
+#####################################################################
+
+
+
+
+
 
 if [ "$1" = "-g" ]
 then
@@ -163,6 +200,7 @@ do
             ;;
         [Jj])
             echo "PREPARATE PARA JUGAR..."
+            juego
             ;;
         [Ee])
             echo "ACCEDIENDO A ESTADISTICAS..."
