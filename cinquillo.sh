@@ -50,15 +50,16 @@ function configuracion
                 clear
                 echo "JUGADORES actuales: $JUGADORES"
                 echo -n "Nuevo número de jugadores (2, 3 o 4): "
-                read nuevo_jugadores
+                read N_JUGADORES
 
-                if [ $nuevo_jugadores == 2 ] || [ $nuevo_jugadores == 3 ] || [ $nuevo_jugadores == 4 ]
+                if [ $N_JUGADORES == 2 ] || [ $N_JUGADORES == 3 ] || [ $N_JUGADORES == 4 ]
                 then
-                    echo JUGADORES=$nuevo_jugadores > config.cfg
+                    JUGADORES=$N_JUGADORES
+                    echo JUGADORES=$JUGADORES > config.cfg
                     echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
                     echo LOG=$LOG >> config.cfg
                     clear
-                    echo "JUGADORES actualizado a $nuevo_jugadores"
+                    echo "JUGADORES actualizado a $JUGADORES"
                 else
                     echo "Número de jugadores no válido. Debe ser 2, 3 o 4."
                 fi
@@ -67,15 +68,16 @@ function configuracion
                 clear
                 echo "ESTRATEGIA actual: $ESTRATEGIA"
                 echo -n "Elegir nueva estrategia (0, 1 o 2): "
-                read nuevo_estrategia
+                read N_ESTRATEGIA
 
-                if [ $nuevo_estrategia == 0 ] || [ $nuevo_estrategia == 1 ] || [ $nuevo_estrategia == 2 ]
+                if [ $N_ESTRATEGIA == 0 ] || [ $N_ESTRATEGIA == 1 ] || [ $N_ESTRATEGIA == 2 ]
                 then
+                    ESTRATEGIA=$N_ESTRATEGIA
                     echo JUGADORES=$JUGADORES > config.cfg
-                    echo ESTRATEGIA=$nuevo_estrategia >> config.cfg
+                    echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
                     echo LOG=$LOG >> config.cfg
                     clear
-                    echo "ESTRATEGIA actualizada a $nuevo_estrategia"
+                    echo "ESTRATEGIA actualizada a $ESTRATEGIA"
                 else
                     echo "Número de estrategia no válido. Debe ser 0, 1 o 2."
                 fi
@@ -83,17 +85,18 @@ function configuracion
             3)
                 clear
                 echo -n "Seleccione la ruta donde se guardará o se encuentra el registro..."
-                read nuevo_directorio
+                read N_LOG
 
-                if [ ! -d "$nuevo_directorio" ]
+                if [ ! -d "N_LOG" ]
                 then
                     echo "ERROR: El directorio no existe o no es correcto."
                 else
+                    LOG=$N_LOG
                     echo JUGADORES=$JUGADORES > config.cfg
                     echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
-                    echo LOG=$nuevo_directorio >> config.cfg
+                    echo LOG=$LOG >> config.cfg
                     clear
-                    echo "LOG actualizado a $nuevo_directorio"
+                    echo "LOG actualizado a $LOG"
                 fi
                 ;;
             4)
@@ -125,34 +128,48 @@ function Comprobaciones
         exit 0
     fi
 }
-function juego {
-palos=("copas" "espadas" "oros" "bastos")
-cartas=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")
-baraja=()
+
+function crear_baraja {
+
+    palos=("bastos" "copas" "espadas" "oros")    
+    cartas=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")    
+    baraja=()
 
 # Llenar la baraja con todas las cartas, @ es para que se lean todos los elementos del array
-for palo in "${palos[@]}"; 
-do
-  for carta in "${cartas[@]}"; 
-  do
-    baraja+=("$carta de $palo")
-  done
-done
+    for palo in "${palos[@]}"; 
+    do
+        for carta in "${cartas[@]}"; 
+        do
+            baraja+=("$carta de $palo")
+        done
+    done
+}
 
 # Función para barajar las cartas. 
 #Funcionamiento: se recorre el array de cartas y se intercambia la carta actual con una carta aleatoria
-
 function barajar {
     for ((i = 0; i < 40 - 1; i++)); 
     do
-        j=$((i + RANDOM % (n - i)))
+        j=$((i + RANDOM % (40 - i)))
     # Intercambiar las cartas en los índices i y j
         temp="${baraja[i]}"
         baraja[i]="${baraja[j]}"
         baraja[j]="$temp"
   done
 }
+
+imprimir_baraja_mezclada() {
+  echo "Baraja mezclada:"
+  for carta in "${baraja[@]}"; do
+    echo "$carta"
+  done
 }
+function juego {
+    crear_baraja
+    barajar
+    imprimir_baraja_mezclada
+}
+
 
 #####################################################################
 ####################### PROGRAMA PRINCIPAL ##########################	
