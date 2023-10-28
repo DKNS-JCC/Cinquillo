@@ -180,7 +180,7 @@ case $JUGADORES in
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
         do
         indice=$((i+1))
-        printf "%-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUGADOR2[i]}"
+        printf "%-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}"
         done
     ;;
 
@@ -202,7 +202,7 @@ case $JUGADORES in
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
         do
             indice=$((i+1))
-            printf "%-30s %-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUGADOR2[i]}" "${indice}) ${JUGADOR3[i]}"
+            printf "%-30s %-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}" "${indice})  ${JUGADOR3[i]}"
         done
 
         ;;
@@ -226,7 +226,7 @@ case $JUGADORES in
         for ((i=0;i<CARTAS_POR_JUGADOR;i++));
         do
             indice=$((i+1))
-            printf "%-30s %-30s %-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUGADOR2[i]}" "${indice}) ${JUGADOR3[i]}" "${indice}) ${JUGADOR4[i]}"
+            printf "%-30s %-30s %-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}" "${indice})  ${JUGADOR3[i]}" "${indice})  ${JUGADOR4[i]}"
         done
         ;;
 
@@ -272,6 +272,7 @@ function juego {
     repartir_por_jugadores
     echo
     mostrar_tablero
+    
 
 
 
