@@ -366,12 +366,66 @@ function juego {
     mostrar_tablero
     buscar_5oros
     TURNO+=1
+    # Si el turno es mayor que el número de jugadores, se reinicia el turno
     if [ $TURNO -gt $JUGADORES ]
     then
         TURNO=1
     fi
     echo "              TURNO DEL JUGADOR $TURNO            "
+    
+if [ $ESTRATEGIA == 0 ]; then
+    if [ $TURNO == 1 ]; then
+        echo "JUGADOR 1, ES TU TURNO"
+        
+        while true; do
+            read -p "Selecciona una carta para colocar (índice): " INDICE
 
+            if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "$CARTAS_POR_JUGADOR" ]; then
+                CARTA_SELECCIONADA="${JUGADOR1[INDICE - 1]}"
+
+                if [ -n "$CARTA_SELECCIONADA" ]; 
+                then
+
+                    CARTA="${JUGADOR1[INDICE - 1]}"
+                    PALO=$(echo "$CARTA" | cut -d " " -f 3)
+                    NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
+                    unset JUGADOR1[INDICE - 1]
+                        if [ $NUMERO == 5 ]
+                        then
+                            case $PALO in
+                                "bastos")
+                                    BASTOS[4]="(+) 5 de bastos"
+                                    ;;
+                                "copas")
+                                    COPAS[4]="(+) 5 de copas"
+                                    ;;
+                                "espadas")
+                                    ESPADAS[4]="(+) 5 de espadas"
+                                    ;;
+                            esac
+                        
+                        fi
+                
+                        if [ $NUMERO -gt 5 ]
+                        then
+                            for((i=9;i>5;i--)); 
+                            do
+                                mostrar_tablero
+
+                            done
+                        fi             
+                    break
+                else
+                    echo "La carta en el índice $INDICE ya se ha jugado. Selecciona una carta válida."
+                fi
+            else
+                echo "Índice no válido. Debes seleccionar una carta entre 1 y $CARTAS_POR_JUGADOR."
+            fi
+        done
+
+        mostrar_tablero
+    fi
+fi
 
 
 }
