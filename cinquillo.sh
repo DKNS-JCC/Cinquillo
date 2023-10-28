@@ -109,6 +109,7 @@ function configuracion
 
 function Comprobaciones
 {
+    # Comprobar si existe el archivo de configuración
     if [ ! -f "config.cfg" ] || [ ! -s "config.cfg" ]
     then
         echo "El archivo de configuración 'config.cfg' no se ha encontrado en este directorio o esta vacío."
@@ -116,8 +117,15 @@ function Comprobaciones
         read opcion
         exit -1
     fi
-
-    if ! grep '^JUGADORES=[2-4]$' config.cfg || ! grep '^ESTRATEGIA=[0-2]$' config.cfg || ! grep '^LOG=*' config.cfg
+    # Comprobar si el archivo de configuración tiene permisos de lectura y escritura
+    if [ ! -r "config.cfg" ] && [ ! -w "config.cfg" ]; 
+    then
+        echo "No tienes permisos de lectura y/o escritura en el archivo config.cfg."
+        read
+        exit -1
+    fi
+    # Comprobar si el archivo de configuración tiene el formato correcto
+    if  ! grep '^JUGADORES=[2-4]$' config.cfg  ||  ! grep '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep '^LOG=*' config.cfg 
     then
         clear
         echo "ERROR: El archivo de configuración 'config.cfg' no es correcto"
@@ -175,7 +183,7 @@ case $JUGADORES in
         JUGADOR2+=("${BARAJA[i + CARTAS_POR_JUGADOR]}")
         done
         echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:"
+        printf "%-30s %-30s\n" "Tus Cartas:" "Jugador 2:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
         do
@@ -197,7 +205,7 @@ case $JUGADORES in
             JUGADOR3+=("${BARAJA[i + CARTAS_POR_JUGADOR * 2]}")
         done
         echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:" "Cartas del Jugador 3:"
+        printf "%-30s %-30s %-30s\n" "Tus Cartas:" "Jugador 2:" "Jugador 3:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
         do
@@ -221,7 +229,7 @@ case $JUGADORES in
             JUGADOR4+=("${BARAJA[i + CARTAS_POR_JUGADOR * 3]}")
         done
         echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s %-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:" "Cartas del Jugador 3:" "Cartas del Jugador 4:"
+        printf "%-30s %-30s %-30s %-30s\n" "Tus Cartas:" "Jugador 2:" "Jugador 3:" "Jugador 4:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++));
         do
@@ -260,19 +268,21 @@ function mostrar_tablero {
         PALO_ESPADA="${ESPADAS[i]}"
         PALO_ORO="${OROS[i]}"
 
-        printf "%-30s %-30s %-30s %-30s\n" "$PALO_BASTO" "$PALO_COPA" "$PALO_ESPADA" "$PALO_ORO"
+        printf "%-20s %-20s %-20s %-20s\n" "$PALO_BASTO" "$PALO_COPA" "$PALO_ESPADA" "$PALO_ORO"
     done
 }
 
 
 
 function juego {
+    clear
     crear_baraja
     barajar
+    clear
     repartir_por_jugadores
     echo
     mostrar_tablero
-    
+
 
 
 
