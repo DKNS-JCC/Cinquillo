@@ -131,7 +131,7 @@ function crear_baraja {
     CARTAS=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")    
     BARAJA=()
 
-# Llenar la BARAJA con todas las cartas, @ es para que se lean todos los elementos del array
+# Llenar la BARAJA con todas las cartas, @ (tamaño) es para que se lean todos los elementos del array
     for PALO in "${PALOS[@]}"; 
     do
         for CARTA in "${CARTAS[@]}"; 
@@ -174,7 +174,7 @@ case $JUGADORES in
             JUGADOR2+=("${BARAJA[i + CARTAS_POR_JUGADOR]}")
         done
         echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s\n" "Cartas del Jugador 1:" "Cartas del Jugador 2:"
+        printf "%-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
         do
@@ -193,7 +193,7 @@ case $JUGADORES in
             JUGADOR3+=("${BARAJA[i + CARTAS_POR_JUGADOR * 2]}")
         done
         echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s %-30s\n" "Cartas del Jugador 1:" "Cartas del Jugador 2:" "Cartas del Jugador 3:"
+        printf "%-30s %-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:" "Cartas del Jugador 3:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); do
             printf "%-30s %-30s %-30s\n" "${JUGADOR1[i]}" "${JUGADOR2[i]}" "${JUGADOR3[i]}"
@@ -215,7 +215,7 @@ case $JUGADORES in
             JUGADOR4+=("${BARAJA[i + CARTAS_POR_JUGADOR * 3]}")
         done
         echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s %-30s %-30s\n" "Cartas del Jugador 1:" "Cartas del Jugador 2:" "Cartas del Jugador 3:" "Cartas del Jugador 4:"
+        printf "%-30s %-30s %-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:" "Cartas del Jugador 3:" "Cartas del Jugador 4:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++));
         do
@@ -236,8 +236,17 @@ ESPADAS=("1 de espadas" "2 de espadas" "3 de espadas" "4 de espadas" "5 de espad
 OROS=("1 de oros" "2 de oros" "3 de oros" "4 de oros" "5 de oros" "6 de oros" "7 de oros" "SOTA de oros" "CABALLO de oros" "REY de oros")
 }
 
-function mostrar_palos {
+function mostrar_tablero {
+
     echo "-----------------------------------------------------------------------------------------"
+    echo "|                      _____ _____ _____ __    _____ _____ _____                        |"
+    echo "|                     |_   _|  _  | __  |  |  |   __| __  |     |                       |"
+    echo "|                       | | |     | __ -|  |__|   __|    -|  |  |                       |"
+    echo "|                       |_| |__|__|_____|_____|_____|__|__|_____|                       |"
+    echo "|                                                                                       |"
+    echo "|                     (+) Indica si la carta esta colocada o no                         |"
+    echo "-----------------------------------------------------------------------------------------"
+
     for ((i = 0; i < 10; i++)); do
         PALO_BASTO="${BASTOS[i]}"
         PALO_COPA="${COPAS[i]}"
@@ -254,7 +263,8 @@ function juego {
     crear_baraja
     barajar
     repartir_por_jugadores
-    mostrar_palos
+    echo
+    mostrar_tablero
 
 
 
