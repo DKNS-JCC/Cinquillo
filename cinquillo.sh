@@ -284,6 +284,7 @@ function mostrar_tablero {
 }
 
 function buscar_5oros {
+    TURNO=0
     clear
     # Buscar la carta 5 de oros en la mano del jugador 1
     for ((i = 0; i < ${#JUGADOR1[@]}; i++)); 
@@ -293,6 +294,7 @@ function buscar_5oros {
             echo "EL JUGADOR 1 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
+                TURNO=1
             # Eliminar la carta 5 de oros de la mano del jugador
                 unset JUGADOR1[i]
                 break
@@ -310,6 +312,7 @@ function buscar_5oros {
             echo "EL JUGADOR 2 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
+                TURNO=2
             # Eliminar la carta 5 de oros de la mano del jugador
                 unset JUGADOR2[i]
                 break
@@ -326,6 +329,7 @@ function buscar_5oros {
             echo "EL JUGADOR 3 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
+                TURNO=3
             # Eliminar la carta 5 de oros de la mano del jugador
                 unset JUGADOR3[i]
                 break
@@ -342,13 +346,13 @@ function buscar_5oros {
             echo "EL JUGADOR 4 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
+                TURNO=4
             # Eliminar la carta 5 de oros de la mano del jugador
                 unset JUGADOR4[i]
                 break
         fi
     done
     mostrar_tablero
-
 }
 
 
@@ -361,7 +365,12 @@ function juego {
     repartir_por_jugadores
     mostrar_tablero
     buscar_5oros
-    read
+    TURNO+=1
+    if [ $TURNO -gt $JUGADORES ]
+    then
+        TURNO=1
+    fi
+    echo "              TURNO DEL JUGADOR $TURNO            "
 
 
 
