@@ -225,7 +225,6 @@ OROS=("1 de oros" "2 de oros" "3 de oros" "4 de oros" "5 de oros" "6 de oros" "7
 }
 
 function mostrar_tablero {
-    clear
     case $JUGADORES in
         2)
             echo "-----------------------------------------------------------------------------------------"
@@ -307,6 +306,7 @@ function buscar_5oros {
         if [ "${JUGADOR2[i]}" == "5 de oros" ];
         then
             echo
+            clear
             echo "EL JUGADOR 2 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
@@ -322,6 +322,7 @@ function buscar_5oros {
         if [ "${JUGADOR3[i]}" == "5 de oros" ];
         then
             echo
+            clear
             echo "EL JUGADOR 3 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
@@ -337,6 +338,7 @@ function buscar_5oros {
         if [ "${JUGADOR4[i]}" == "5 de oros" ];
         then
             echo
+            clear
             echo "EL JUGADOR 4 TIENE LA CARTA 5 DE OROS"
             # Colocar la carta 5 de oros en el tablero
                 OROS[4]="(+) 5 de oros"
