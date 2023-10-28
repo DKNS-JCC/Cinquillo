@@ -165,22 +165,26 @@ TOTAL_CARTAS=${#BARAJA[@]}
 
 case $JUGADORES in
     2)
+
         CARTAS_POR_JUGADOR=$((TOTAL_CARTAS / 2))
         for ((i=0; i<CARTAS_POR_JUGADOR; i++)); 
         do
-            # Añade la carta al jugador 1
-            JUGADOR1+=("${BARAJA[i]}")
-            # Añade la carta al jugador 2
-            JUGADOR2+=("${BARAJA[i + CARTAS_POR_JUGADOR]}")
+        # Añade la carta al jugador 1
+        JUGADOR1+=("${BARAJA[i]}")
+        # Añade la carta al jugador 2
+        JUGADOR2+=("${BARAJA[i + CARTAS_POR_JUGADOR]}")
         done
         echo "-----------------------------------------------------------------------------------------"
         printf "%-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:"
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
         do
-            printf "%-30s %-30s\n" "${JUGADOR1[i]}" "${JUGADOR2[i]}"
+        indice=$((i+1))
+        printf "%-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUGADOR2[i]}"
         done
-        ;;
+    ;;
+
+
 
     3)
         CARTAS_POR_JUGADOR=$((TOTAL_CARTAS / 3))
@@ -195,8 +199,10 @@ case $JUGADORES in
         echo "-----------------------------------------------------------------------------------------"
         printf "%-30s %-30s %-30s\n" "Tus Cartas:" "Cartas del Jugador 2:" "Cartas del Jugador 3:"
         echo
-        for ((i=0;i<CARTAS_POR_JUGADOR;i++)); do
-            printf "%-30s %-30s %-30s\n" "${JUGADOR1[i]}" "${JUGADOR2[i]}" "${JUGADOR3[i]}"
+        for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
+        do
+            indice=$((i+1))
+            printf "%-30s %-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUGADOR2[i]}" "${indice}) ${JUGADOR3[i]}"
         done
 
         ;;
@@ -219,7 +225,8 @@ case $JUGADORES in
         echo
         for ((i=0;i<CARTAS_POR_JUGADOR;i++));
         do
-            printf "%-30s %-30s %-30s %-30s\n" "${JUGADOR1[i]}" "${JUGADOR2[i]}" "${JUGADOR3[i]}" "${JUGADOR4[i]}"
+            indice=$((i+1))
+            printf "%-30s %-30s %-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUGADOR2[i]}" "${indice}) ${JUGADOR3[i]}" "${indice}) ${JUGADOR4[i]}"
         done
         ;;
 
