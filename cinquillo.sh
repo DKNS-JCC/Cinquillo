@@ -136,7 +136,7 @@ function Comprobaciones
 function crear_baraja {
 
     PALOS=("bastos" "copas" "espadas" "oros")    
-    CARTAS=("1" "2" "3" "4" "5" "6" "7" "sota" "caballo" "rey")    
+    CARTAS=("1" "2" "3" "4" "5" "6" "7" "10" "11" "12")    
     BARAJA=()
 
 # Llenar la BARAJA con todas las cartas, @ (tamaño) es para que se lean todos los elementos del array
@@ -245,10 +245,10 @@ case $JUGADORES in
 esac
 
 # Declarar arrays de cartas de cada palo llenos
-BASTOS=("1 de bastos" "2 de bastos" "3 de bastos" "4 de bastos" "5 de bastos" "6 de bastos" "7 de bastos" "SOTA de bastos" "CABALLO de bastos" "REY de bastos")
-COPAS=("1 de copas" "2 de copas" "3 de copas" "4 de copas" "5 de copas" "6 de copas" "7 de copas" "SOTA de copas" "CABALLO de copas" "REY de copas")
-ESPADAS=("1 de espadas" "2 de espadas" "3 de espadas" "4 de espadas" "5 de espadas" "6 de espadas" "7 de espadas" "SOTA de espadas" "CABALLO de espadas" "REY de espadas")
-OROS=("1 de oros" "2 de oros" "3 de oros" "4 de oros" "5 de oros" "6 de oros" "7 de oros" "SOTA de oros" "CABALLO de oros" "REY de oros")
+BASTOS=("1 de bastos" "2 de bastos" "3 de bastos" "4 de bastos" "5 de bastos" "6 de bastos" "7 de bastos" "10 de bastos" "11 de bastos" "12 de bastos")
+COPAS=("1 de copas" "2 de copas" "3 de copas" "4 de copas" "5 de copas" "6 de copas" "7 de copas" "10 de copas" "11 de copas" "12 de copas")
+ESPADAS=("1 de espadas" "2 de espadas" "3 de espadas" "4 de espadas" "5 de espadas" "6 de espadas" "7 de espadas" "10 de espadas" "11 de espadas" "12 de espadas")
+OROS=("1 de oros" "2 de oros" "3 de oros" "4 de oros" "5 de oros" "6 de oros" "7 de oros" "10 de oros" "11 de oros" "12 de oros")
 }
 
 function mostrar_tablero {
@@ -268,7 +268,7 @@ function mostrar_tablero {
         PALO_ESPADA="${ESPADAS[i]}"
         PALO_ORO="${OROS[i]}"
 
-        printf "%-20s %-20s %-20s %-20s\n" "$PALO_BASTO" "$PALO_COPA" "$PALO_ESPADA" "$PALO_ORO"
+        printf "%-20s %-20s %-20s %-20s\n" "$PALO_BASTO" "$PALO_ORO" "$PALO_ESPADA" "$PALO_COPA"
     done
 }
 
