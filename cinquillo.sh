@@ -181,17 +181,7 @@ case $JUGADORES in
         # Añade la carta al jugador 2
         JUGADOR2+=("${BARAJA[i + CARTAS_POR_JUGADOR]}")
         done
-        echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s\n" "Tus Cartas:" "Jugador 2:"
-        echo
-        for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
-        do
-        indice=$((i+1))
-        printf "%-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}"
-        done
     ;;
-
-
 
     3)
         CARTAS_POR_JUGADOR=$((TOTAL_CARTAS / 3))
@@ -203,15 +193,7 @@ case $JUGADORES in
             # Añade la carta al jugador 3
             JUGADOR3+=("${BARAJA[i + CARTAS_POR_JUGADOR * 2]}")
         done
-        echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s %-30s\n" "Tus Cartas:" "Jugador 2:" "Jugador 3:"
-        echo
-        for ((i=0;i<CARTAS_POR_JUGADOR;i++)); 
-        do
-            indice=$((i+1))
-            printf "%-30s %-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}" "${indice})  ${JUGADOR3[i]}"
-        done
-
+            JUGADOR1+=("${BARAJA[i + CARTAS_POR_JUGADOR +1]}") # Carta del jugador 1 sobrante
         ;;
 
     4)
@@ -226,14 +208,6 @@ case $JUGADORES in
             JUGADOR3+=("${BARAJA[i + CARTAS_POR_JUGADOR * 2]}")
             # Añade la carta al jugador 4
             JUGADOR4+=("${BARAJA[i + CARTAS_POR_JUGADOR * 3]}")
-        done
-        echo "-----------------------------------------------------------------------------------------"
-        printf "%-30s %-30s %-30s %-30s\n" "Tus Cartas:" "Jugador 2:" "Jugador 3:" "Jugador 4:"
-        echo
-        for ((i=0;i<CARTAS_POR_JUGADOR;i++));
-        do
-            indice=$((i+1))
-            printf "%-30s %-30s %-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}" "${indice})  ${JUGADOR3[i]}" "${indice})  ${JUGADOR4[i]}"
         done
         ;;
 
@@ -251,6 +225,45 @@ OROS=("1 de oros" "2 de oros" "3 de oros" "4 de oros" "5 de oros" "6 de oros" "7
 }
 
 function mostrar_tablero {
+    clear
+    case $JUGADORES in
+        2)
+            echo "-----------------------------------------------------------------------------------------"
+            printf "%-30s %-30s\n" "Tus Cartas:" "Jugador 2:"
+            echo
+            for ((i=0;i<20;i++)); 
+            do
+                indice=$((i+1))
+                printf "%-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}"
+            done
+            ;;
+        3)
+            echo "-----------------------------------------------------------------------------------------"
+            printf "%-30s %-30s %-30s\n" "Tus Cartas:" "Jugador 2:" "Jugador 3:"
+            echo
+            for ((i=0;i<13;i++)); 
+            do
+                indice=$((i+1))
+                printf "%-30s %-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}" "${indice})  ${JUGADOR3[i]}"
+            done
+                printf "%-30s " "14)  ${JUGADOR1[13]}"
+                echo
+            ;;
+        4)
+            echo "-----------------------------------------------------------------------------------------"
+            printf "%-30s %-30s %-30s %-30s\n" "Tus Cartas:" "Jugador 2:" "Jugador 3:" "Jugador 4:"
+            echo
+            for ((i=0;i<10;i++)); 
+            do
+                indice=$((i+1))
+                printf "%-30s %-30s %-30s %-30s\n" "${indice})  ${JUGADOR1[i]}" "${indice})  ${JUGADOR2[i]}" "${indice})  ${JUGADOR3[i]}" "${indice})  ${JUGADOR4[i]}"
+            done
+            ;;
+        *)
+            echo "ERROR: EL NÚMERO DE JUGADORES NO ES CORRECTO"
+            exit -1
+            ;;
+    esac
 
     echo "-----------------------------------------------------------------------------------------"
     echo "|                      _____ _____ _____ __    _____ _____ _____                        |"
@@ -271,6 +284,71 @@ function mostrar_tablero {
     done
 }
 
+function buscar_5oros {
+    clear
+    # Buscar la carta 5 de oros en la mano del jugador 1
+    for ((i = 0; i < ${#JUGADOR1[@]}; i++)); 
+    do
+        if [ "${JUGADOR1[i]}" == "5 de oros" ]; 
+        then
+            echo "EL JUGADOR 1 TIENE LA CARTA 5 DE OROS"
+            # Colocar la carta 5 de oros en el tablero
+                OROS[4]="(+) 5 de oros"
+            # Eliminar la carta 5 de oros de la mano del jugador
+                unset JUGADOR1[i]
+                break
+            
+        fi
+    done
+
+    # Buscar la carta 5 de oros en la mano del jugador 2
+    for ((i = 0; i < ${#JUGADOR2[@]}; i++));
+    do
+        if [ "${JUGADOR2[i]}" == "5 de oros" ];
+        then
+            echo
+            echo "EL JUGADOR 2 TIENE LA CARTA 5 DE OROS"
+            # Colocar la carta 5 de oros en el tablero
+                OROS[4]="(+) 5 de oros"
+            # Eliminar la carta 5 de oros de la mano del jugador
+                unset JUGADOR2[i]
+                break
+        fi
+    done
+
+    # Buscar la carta 5 de oros en la mano del jugador 3
+    for ((i = 0; i < ${#JUGADOR3[@]}; i++));
+    do
+        if [ "${JUGADOR3[i]}" == "5 de oros" ];
+        then
+            echo
+            echo "EL JUGADOR 3 TIENE LA CARTA 5 DE OROS"
+            # Colocar la carta 5 de oros en el tablero
+                OROS[4]="(+) 5 de oros"
+            # Eliminar la carta 5 de oros de la mano del jugador
+                unset JUGADOR3[i]
+                break
+        fi
+    done
+
+    # Buscar la carta 5 de oros en la mano del jugador 4
+    for ((i = 0; i < ${#JUGADOR4[@]}; i++));
+    do
+        if [ "${JUGADOR4[i]}" == "5 de oros" ];
+        then
+            echo
+            echo "EL JUGADOR 4 TIENE LA CARTA 5 DE OROS"
+            # Colocar la carta 5 de oros en el tablero
+                OROS[4]="(+) 5 de oros"
+            # Eliminar la carta 5 de oros de la mano del jugador
+                unset JUGADOR4[i]
+                break
+        fi
+    done
+    mostrar_tablero
+
+}
+
 
 
 function juego {
@@ -279,9 +357,9 @@ function juego {
     barajar
     clear
     repartir_por_jugadores
-    echo
     mostrar_tablero
-
+    buscar_5oros
+    read
 
 
 
