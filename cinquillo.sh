@@ -25,11 +25,7 @@ function mostrarMenu
 
 function configuracion
 {
-    while true; do
-        #-d es el delimitador y -f es el campo
-        JUGADORES=$(grep '^JUGADORES=' config.cfg | cut -d '=' -f 2)
-        ESTRATEGIA=$(grep '^ESTRATEGIA=' config.cfg | cut -d '=' -f 2)
-        LOG=$(grep '^LOG=' config.cfg | cut -d '=' -f 2) 
+    while true; do 
 
         echo "==============================="
         echo "          CONFIGURACION        "
@@ -157,21 +153,120 @@ function barajar {
         BARAJA[j]="$temp"
   done
 }
+function repartir_por_jugadores {
+    # Crea dos arrays vacíos para los dos jugadores
+jugador1=()
+jugador2=()
+jugador3=()
+jugador4=()
+
+# Calcula cuántas cartas se repartirán a cada jugador
+total_cartas=${#BARAJA[@]}
+
+case $JUGADORES in
+    2)
+        cartas_por_jugador=$((total_cartas / 2))
+        for ((i=0; i<cartas_por_jugador; i++)); do
+            # Añade la carta al jugador 1
+            jugador1+=("${BARAJA[i]}")
+            # Añade la carta al jugador 2
+            jugador2+=("${BARAJA[i + cartas_por_jugador]}")
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 1:"
+        for CARTA in "${jugador1[@]}"; do
+            echo "$CARTA"
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 2:"
+        for CARTA in "${jugador2[@]}"; do
+            echo "$CARTA"
+        done
+        ;;
+
+    3)
+        cartas_por_jugador=$((total_cartas / 3))
+        for ((i=0; i<cartas_por_jugador; i++)); do
+            # Añade la carta al jugador 1
+            jugador1+=("${BARAJA[i]}")
+            # Añade la carta al jugador 2
+            jugador2+=("${BARAJA[i + cartas_por_jugador]}")
+            # Añade la carta al jugador 3
+            jugador3+=("${BARAJA[i + cartas_por_jugador * 2]}")
+        done
+        jugador1+=("${BARAJA[cartas_por_jugador * 3]}")
+        echo "-------------------------"
+        echo "Cartas del Jugador 1:"
+        for CARTA in "${jugador1[@]}"; do
+            echo "$CARTA"
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 2:"
+        for CARTA in "${jugador2[@]}"; do
+            echo "$CARTA"
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 3:"
+        for CARTA in "${jugador3[@]}"; do
+            echo "$CARTA"
+        done
+        ;;
+
+    4)
+        cartas_por_jugador=$((total_cartas / 4))
+        for ((i=0; i<cartas_por_jugador; i++)); do
+            # Añade la carta al jugador 1
+            jugador1+=("${BARAJA[i]}")
+            # Añade la carta al jugador 2
+            jugador2+=("${BARAJA[i + cartas_por_jugador]}")
+            # Añade la carta al jugador 3
+            jugador3+=("${BARAJA[i + cartas_por_jugador * 2]}")
+            # Añade la carta al jugador 4
+            jugador4+=("${BARAJA[i + cartas_por_jugador * 3]}")
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 1:"
+        for CARTA in "${jugador1[@]}"; do
+            echo "$CARTA"
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 2:"
+        for CARTA in "${jugador2[@]}"; do
+            echo "$CARTA"
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 3:"
+        for CARTA in "${jugador3[@]}"; do
+            echo "$CARTA"
+        done
+        echo "-------------------------"
+        echo "Cartas del Jugador 4:"
+        for CARTA in "${jugador4[@]}"; do
+            echo "$CARTA"
+        done
+        ;;
+
+    *)
+        echo "ERROR: El número de jugadores no es correcto"
+        exit 0
+        ;;
+esac
+
+}
 
 function juego {
     crear_baraja
     barajar
-    echo "Baraja mezclada:"
-    for CARTA in "${BARAJA[@]}"; 
-    do
-        echo "$CARTA"
-    done
+    repartir_por_jugadores
+    
+
 }
 
 
 #####################################################################
 ####################### PROGRAMA PRINCIPAL ##########################	
 #####################################################################
+
 
 
 if [ "$1" = "-g" ]
@@ -198,6 +293,11 @@ then
 fi
 
 Comprobaciones
+
+        #-d es el delimitador y -f es el campo
+        JUGADORES=$(grep '^JUGADORES=' config.cfg | cut -d '=' -f 2)
+        ESTRATEGIA=$(grep '^ESTRATEGIA=' config.cfg | cut -d '=' -f 2)
+        LOG=$(grep '^LOG=' config.cfg | cut -d '=' -f 2)
 
 while true
 do
