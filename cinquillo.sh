@@ -124,7 +124,7 @@ function Comprobaciones
         exit -1
     fi
     # Comprobar si el archivo de configuración tiene el formato correcto
-    if  ! grep '^JUGADORES=[2-4]$' config.cfg  ||  ! grep '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep '^LOG=*' config.cfg 
+    if  ! grep '^JUGADORES=[2-4]$' config.cfg  ||  ! grep '^ESTRATEGIA=[0-2]$' config.cfg  ||  ! grep '^LOG=' config.cfg 
     then
         clear
         echo "ERROR: El archivo de configuración 'config.cfg' no es correcto"
@@ -381,19 +381,16 @@ do
             ;;
         2)
             echo "TURNO DEL JUGADOR $TURNO"
-            sleep 2
             echo "ESTRATEGIA 0"
             TURNO=3
             ;;
         3)
             echo "TURNO DEL JUGADOR $TURNO"
-            sleep 2
             echo "ESTRATEGIA 0"
             TURNO=4
             ;;
         4)
             echo "TURNO DEL JUGADOR $TURNO"
-            sleep 2
             echo "ESTRATEGIA 0"
             TURNO=1
             ;;
@@ -403,8 +400,15 @@ do
 done
 }
 function turno_usuario {
+    while true; do
         read -p "Selecciona una carta para colocar (índice): " INDICE
-
+    if [[ "$INDICE" =~ ^[0-9]+$ ]]; then
+        break  
+    else
+        echo "Índice no válido. Debes seleccionar una carta entre 1 y $CARTAS_POR_JUGADOR."
+    fi
+        
+    done
         if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "$CARTAS_POR_JUGADOR" ]; then
             CARTA="${JUGADOR1[INDICE - 1]}"
             INDICE_REAL=$((INDICE - 1))
@@ -431,12 +435,11 @@ function turno_usuario {
                     clear
                     mostrar_tablero
                 else
-                    case $PALO in
+    case $PALO in
     "bastos")
-        for ((i = 0; i < 10; i++)); do
-            if [[ "$CARTA" == "${BASTOS[i]}" ]]; then
-                if [[ "${BASTOS[i+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[i-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
-
+                    for ((i = 0; i < 10; i++)); do
+                    if [[ "$CARTA" == "${BASTOS[i]}" ]]; then
+                    if [[ "${BASTOS[i+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[i-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
 
                     BASTOS[i]="(+) ${NUMERO} de bastos"
                     unset JUGADOR1[INDICE_REAL]
