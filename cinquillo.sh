@@ -181,6 +181,8 @@ case $JUGADORES in
         # Añade la carta al jugador 2
         JUGADOR2+=("${BARAJA[i + CARTAS_POR_JUGADOR]}")
         done
+        NUMERO_CARTAS_JUGADOR1=${#JUGADOR1[@]}
+        NUMERO_CARTAS_JUGADOR2=${#JUGADOR2[@]}
     ;;
 
     3)
@@ -194,6 +196,9 @@ case $JUGADORES in
             JUGADOR3+=("${BARAJA[i + CARTAS_POR_JUGADOR * 2]}")
         done
             JUGADOR1+=("${BARAJA[i + CARTAS_POR_JUGADOR +1]}") # Carta del jugador 1 sobrante
+            NUMERO_CARTAS_JUGADOR1=${#JUGADOR1[@]}
+            NUMERO_CARTAS_JUGADOR2=${#JUGADOR2[@]}
+            NUMERO_CARTAS_JUGADOR3=${#JUGADOR3[@]}
         ;;
 
     4)
@@ -209,6 +214,10 @@ case $JUGADORES in
             # Añade la carta al jugador 4
             JUGADOR4+=("${BARAJA[i + CARTAS_POR_JUGADOR * 3]}")
         done
+        NUMERO_CARTAS_JUGADOR1=${#JUGADOR1[@]}
+        NUMERO_CARTAS_JUGADOR2=${#JUGADOR2[@]}
+        NUMERO_CARTAS_JUGADOR3=${#JUGADOR3[@]}
+        NUMERO_CARTAS_JUGADOR4=${#JUGADOR4[@]}
         ;;
 
     *)
@@ -381,81 +390,135 @@ do
             ;;
         2)
             echo "TURNO DEL JUGADOR $TURNO"
-            case $ESTRATEGIA in
-                0)
-        for ((i = 0; i < ${#JUGADOR2[@]}; i++)); do
+case $ESTRATEGIA in
+    0)
+    # Añades estas variables al bucle para que itere sobre el jugador correspondiente
+    # if (TURNO == 3)
+    #    NUMERO_CARTAS_TOTAL = NUMERO_CARTAS_JUGADOR3
+    #    CARTAS_JUGADOR = JUGADOR3
+    #    TURNO_JUGADOR = TURNO
+
+    for ((i = 0; i < ${#JUGADOR2[@]} && $TURNO == 2; i++)); do
+        if [ ! -z "${JUGADOR2[i]}" ]; then
             CARTA="${JUGADOR2[i]}"
             PALO=$(echo "$CARTA" | cut -d " " -f 3)
             NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
-
-            if [ "$NUMERO" -eq 5 ]; then
+            if [ "$NUMERO" == 5 ]; then
+                PUSO_CARTA=false
+                # Si el número es 5, coloca la carta directamente y pasa al turno 3
                 case $PALO in
                     "bastos")
                         BASTOS[4]="(+) 5 de bastos"
                         unset JUGADOR2[i]
-                        return
+                        TURNO=3
+                        PUSO_CARTA=true
+                        clear
+                        mostrar_tablero
+                        break
                         ;;
                     "copas")
                         COPAS[4]="(+) 5 de copas"
                         unset JUGADOR2[i]
-                        return
+                        TURNO=3
+                        PUSO_CARTA=true
+                        clear
+                        mostrar_tablero
+                        break
                         ;;
                     "espadas")
                         ESPADAS[4]="(+) 5 de espadas"
                         unset JUGADOR2[i]
-                        return
+                        TURNO=3
+                        PUSO_CARTA=true
+                        clear
+                        mostrar_tablero
+                        break
                         ;;
-            esac
-        else
-            case $PALO in
-                "bastos")
-                    for ((j = 0; j < 10; j++)); do
-                        if [[ "$CARTA" == "${BASTOS[j]}" ]]; then
-                            if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
-                                BASTOS[j]="(+) ${NUMERO} de bastos"
-                                unset JUGADOR2[i]
-                                return
+                esac
+            else
+                PUSO_CARTA=false
+                case $PALO in
+                    "bastos")
+                        for ((j = 0; j < 10; j++)); do
+                            echo "CARTA: $CARTA ARRAY_CARTA: ${BASTOS[j]} I: $i J: $j"
+                            if [[ "$CARTA" == "${BASTOS[j]}" ]]; then
+                                echo "CARTA: $CARTA PUSO_CARTA: $PUSO_CARTA"
+                                if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
+                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                                    BASTOS[j]="(+) ${NUMERO} de bastos"
+                                    unset JUGADOR2[i]
+                                    TURNO=3
+                                    PUSO_CARTA=true
+                                    clear
+                                    mostrar_tablero
+                                    break
+                                fi
                             fi
-                        fi
-                    done
-                    ;;
-                "copas")
-                    for ((j = 0; j < 10; j++)); do
-                        if [[ "$CARTA" == "${COPAS[j]}" ]]; then
-                            if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]]; then
-                                COPAS[j]="(+) ${NUMERO} de copas"
-                                unset JUGADOR2[i]
-                                return
+                        done
+                        ;;
+                    "copas")
+                        for ((j = 0; j < 10; j++)); do
+                            echo "CARTA: $CARTA ARRAY_CARTA: ${COPAS[j]} I: $i J: $j"
+                            if [[ "$CARTA" == "${COPAS[j]}" ]]; then
+                                echo "CARTA: $CARTA PUSO_CARTA: $PUSO_CARTA"
+                                if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]]; then
+                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                                    COPAS[j]="(+) ${NUMERO} de copas"
+                                    unset JUGADOR2[i]
+                                    TURNO=3
+                                    PUSO_CARTA=true
+                                    clear
+                                    mostrar_tablero
+                                    break
+                                fi
                             fi
-                        fi
-                    done
-                    ;;
-                "espadas")
-                    for ((j = 0; j < 10; j++)); do
-                        if [[ "$CARTA" == "${ESPADAS[j]}" ]]; then
-                            if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[j-1]}" == "(+) $((NUMERO - 1)) de espadas" ]]; then
-                                ESPADAS[j]="(+) ${NUMERO} de espadas"
-                                unset JUGADOR2[i]
-                                return
+                        done
+                        ;;
+                    "espadas")
+                        for ((j = 0; j < 10; j++)); do
+                            echo "CARTA: $CARTA ARRAY_CARTA: ${ESPADAS[j]} I: $i J: $j"
+                            if [[ "$CARTA" == "${ESPADAS[j]}" ]]; then
+                                echo "CARTA: $CARTA PUSO_CARTA: $PUSO_CARTA"
+                                if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[j-1]}" == "(+) $((NUMERO - 1)) de espadas" ]]; then
+                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                                    ESPADAS[j]="(+) ${NUMERO} de espadas"
+                                    unset JUGADOR2[i]
+                                    TURNO=3
+                                    PUSO_CARTA=true
+                                    clear
+                                    mostrar_tablero
+                                    break
+                                fi
                             fi
-                        fi
-                    done
-                    ;;
-                "oros")
-                    for ((j = 0; j < 10; j++)); do
-                        if [[ "$CARTA" == "${OROS[j]}" ]]; then
-                            if [[ "${OROS[j+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[j-1]}" == "(+) $((NUMERO - 1)) de oros" ]]; then
-                                OROS[j]="(+) ${NUMERO} de oros"
-                                unset JUGADOR2[i]
-                                return
+                        done
+                        ;;
+                    "oros")
+                        for ((j = 0; j < 10; j++)); do
+                            echo "CARTA: $CARTA ARRAY_CARTA: ${OROS[j]} I: $i J: $j"
+                            if [[ "$CARTA" == "${OROS[j]}" ]]; then
+                                echo "CARTA: $CARTA PUSO_CARTA: $PUSO_CARTA"
+                                if [[ "${OROS[j+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[j-1]}" == "(+) $((NUMERO - 1)) de oros" ]]; then
+                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                                    OROS[j]="(+) ${NUMERO} de oros"
+                                    unset JUGADOR2[i]
+                                    TURNO=3
+                                    PUSO_CARTA=true
+                                    clear
+                                    mostrar_tablero
+                                    break
+                                fi
                             fi
-                        fi
-                    done
-                    ;;
-            esac
+                        done
+                        ;;
+                esac
+            fi
         fi
-    done
-                    TURNO=3
+done
+if [ "$PUSO_CARTA" == false ]; then
+    echo "JUGADOR $TURNO PASA TURNO"
+    TURNO=3
+fi
+TURNO=3
                     ;;
                 1)
                     echo "ESTRATEGIA 1"
@@ -496,10 +559,10 @@ function turno_usuario {
             if [ "$INDICE" -eq 0 ]; then
                 echo "SALTO TURNO JUGADOR 1"
                 return
-            elif [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${#JUGADOR1[@]}" ]; then
+            elif [ "$INDICE" -ge 1 ] && [ "$INDICE" -le ${NUMERO_CARTAS_JUGADOR1} ]; then
                 break
             else
-                echo "Índice no válido. Debes seleccionar una carta entre 1 y ${#JUGADOR1[@]} o 0 para saltar turno."
+                echo "Índice no válido. Debes seleccionar una carta entre 1 y ${NUMERO_CARTAS_JUGADOR1} o 0 para saltar turno."
             fi
         else
             echo "Índice no válido. Debes seleccionar una carta válida (número) o 0 para saltar turno."
@@ -596,11 +659,11 @@ function turno_usuario {
 
             fi
             else
-                echo "Índice no válido. Debes seleccionar una carta entre 1 y ${#JUGADOR1[@]}."
+                echo "Índice no válido. Debes seleccionar una carta entre 1 y ${NUMERO_CARTAS_JUGADOR1}."
                 turno_usuario
             fi
         else
-            echo "Índice no válido. Debes seleccionar una carta entre 1 y ${#JUGADOR1[@]}."
+            echo "Índice no válido. Debes seleccionar una carta entre 1 y ${NUMERO_CARTAS_JUGADOR1}."
             turno_usuario
         fi
         clear
