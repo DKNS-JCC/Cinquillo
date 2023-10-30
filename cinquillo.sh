@@ -535,8 +535,7 @@ case $ESTRATEGIA in
                     "bastos")
                         for ((j = 0; j < 10; j++)); do
                             if [[ "$CARTA" == "${BASTOS[j]}" ]]; then
-                                if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
-                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                                if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]] || { [[ "$NUMERO" == "7" && "${BASTOS[j+1]}" == "(+) 10 de bastos" ]] || [[ "$NUMERO" == "10" && "${BASTOS[j-1]}" == "(+) 7 de bastos" ]]; }; then
                                     BASTOS[j]="(+) ${NUMERO} de bastos"
                                     echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de bastos"
                                     CARTAS_JUGADOR[i]=""
@@ -563,8 +562,7 @@ case $ESTRATEGIA in
                     "copas")
                         for ((j = 0; j < 10; j++)); do
                             if [[ "$CARTA" == "${COPAS[j]}" ]]; then
-                                if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]]; then
-                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                            if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]] || { [[ "$NUMERO" == "7" && "${COPAS[j+1]}" == "(+) 10 de copas" ]] || [[ "$NUMERO" == "10" && "${COPAS[j-1]}" == "(+) 7 de copas" ]]; }; then
                                     COPAS[j]="(+) ${NUMERO} de copas"
                                     echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de copas"
                                     CARTAS_JUGADOR[i]=""
@@ -591,8 +589,7 @@ case $ESTRATEGIA in
                     "espadas")
                         for ((j = 0; j < 10; j++)); do
                             if [[ "$CARTA" == "${ESPADAS[j]}" ]]; then
-                                if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[j-1]}" == "(+) $((NUMERO - 1)) de espadas" ]]; then
-                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
+                            if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[j-1]}" == "(+) $((NUMERO - 1)) de espadas" ]] || { [[ "$NUMERO" == "7" && "${ESPADAS[j+1]}" == "(+) 10 de espadas" ]] || [[ "$NUMERO" == "10" && "${ESPADAS[j-1]}" == "(+) 7 de espadas" ]]; }; then
                                     ESPADAS[j]="(+) ${NUMERO} de espadas"
                                     echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de espadas"
                                     CARTAS_JUGADOR[i]=""
@@ -619,9 +616,8 @@ case $ESTRATEGIA in
                     "oros")
                         for ((j = 0; j < 10; j++)); do
                             if [[ "$CARTA" == "${OROS[j]}" ]]; then
-                                if [[ "${OROS[j+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[j-1]}" == "(+) $((NUMERO - 1)) de oros" ]]; then
-                                    # Si cumple con las condiciones, coloca la carta y pasa al turno 3
-                                    OROS[j]="(+) ${NUMERO} de oros"
+                            if [[ "${OROS[j+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[j-1]}" == "(+) $((NUMERO - 1)) de oros" ]] || { [[ "$NUMERO" == "7" && "${OROS[j+1]}" == "(+) 10 de oros" ]] || [[ "$NUMERO" == "10" && "${OROS[j-1]}" == "(+) 7 de oros" ]]; }; then
+                                OROS[j]="(+) ${NUMERO} de oros"
                                     echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de oros"
                                     CARTAS_JUGADOR[i]=""
                                     case $TURNO in
@@ -681,7 +677,7 @@ function turno_usuario {
                         "bastos")
                             for ((j = 0; j < 10; j++)); do
                                 if [[ "$CARTA" == "${BASTOS[j]}" ]]; then
-                                    if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
+                                    if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]] || { [[ "$NUMERO" == "7" && "${BASTOS[j+1]}" == "(+) 10 de bastos" ]] || [[ "$NUMERO" == "10" && "${BASTOS[j-1]}" == "(+) 7 de bastos" ]]; }; then
                                         puede=true
                                         break
                                     fi
@@ -691,7 +687,7 @@ function turno_usuario {
                         "copas")
                             for ((j = 0; j < 10; j++)); do
                                 if [[ "$CARTA" == "${COPAS[j]}" ]]; then
-                                    if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]]; then
+                                    if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]] || { [[ "$NUMERO" == "7" && "${COPAS[j+1]}" == "(+) 10 de copas" ]] || [[ "$NUMERO" == "10" && "${COPAS[j-1]}" == "(+) 7 de copas" ]]; }; then 
                                         puede=true
                                         break
                                     fi
@@ -701,7 +697,7 @@ function turno_usuario {
                         "espadas")
                             for ((j = 0; j < 10; j++)); do
                                 if [[ "$CARTA" == "${ESPADAS[j]}" ]]; then
-                                    if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[j-1]}" == "(+) $((NUMERO - 1)) de espadas" ]]; then
+                                    if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[j-1]}" == "(+) $((NUMERO - 1)) de espadas" ]] || { [[ "$NUMERO" == "7" && "${ESPADAS[j+1]}" == "(+) 10 de espadas" ]] || [[ "$NUMERO" == "10" && "${ESPADAS[j-1]}" == "(+) 7 de espadas" ]]; }; then
                                         puede=true
                                         break
                                     fi
@@ -711,7 +707,7 @@ function turno_usuario {
                         "oros")
                             for ((j = 0; j < 10; j++)); do
                                 if [[ "$CARTA" == "${OROS[j]}" ]]; then
-                                    if [[ "${OROS[j+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[j-1]}" == "(+) $((NUMERO - 1)) de oros" ]]; then
+                                    if [[ "${OROS[j+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[j-1]}" == "(+) $((NUMERO - 1)) de oros" ]] || { [[ "$NUMERO" == "7" && "${OROS[j+1]}" == "(+) 10 de oros" ]] || [[ "$NUMERO" == "10" && "${OROS[j-1]}" == "(+) 7 de oros" ]]; }; then
                                         puede=true
                                         break
                                     fi
@@ -778,7 +774,8 @@ fi
         "bastos")
             for ((i = 0; i < 10; i++)); do
                 if [[ "$CARTA" == "${BASTOS[i]}" ]]; then
-                    if [[ "${BASTOS[i+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[i-1]}" == "(+) $((NUMERO - 1)) de bastos" ]]; then
+                echo "CARTA SELECCIONADA: $CARTA CARTA SIGUIENTE: ${BASTOS[i+1]} CARTA ANTERIOR: ${BASTOS[i-1]} "
+                    if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO + 1)) de bastos" ]] || [[ "${BASTOS[j-1]}" == "(+) $((NUMERO - 1)) de bastos" ]] || { [[ "$NUMERO" == "7" && "${BASTOS[j+1]}" == "(+) 10 de bastos" ]] || [[ "$NUMERO" == "10" && "${BASTOS[j-1]}" == "(+) 7 de bastos" ]]; }; then
 
                         BASTOS[i]="(+) ${NUMERO} de bastos"
                         echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de bastos"
@@ -793,9 +790,9 @@ fi
             ;;
         "copas")
             for ((i = 0; i < 10; i++)); do
+            echo "CARTA SELECCIONADA: $CARTA CARTA SIGUIENTE: ${COPAS[i+1]} CARTA ANTERIOR: ${COPAS[i-1]} "
                 if [[ "$CARTA" == "${COPAS[i]}" ]]; then
-                    if [[ "${COPAS[i+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[i-1]}" == "(+) $((NUMERO - 1)) de copas" ]]; then
-
+                    if [[ "${COPAS[j+1]}" == "(+) $((NUMERO + 1)) de copas" ]] || [[ "${COPAS[j-1]}" == "(+) $((NUMERO - 1)) de copas" ]] || { [[ "$NUMERO" == "7" && "${COPAS[j+1]}" == "(+) 10 de copas" ]] || [[ "$NUMERO" == "10" && "${COPAS[j-1]}" == "(+) 7 de copas" ]]; }; then
                         COPAS[i]="(+) ${NUMERO} de copas"
                         echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de copas"
                         JUGADOR1[INDICE_REAL]=""
@@ -809,9 +806,9 @@ fi
             ;;
         "espadas")
             for ((i = 0; i < 10; i++)); do
+            echo "CARTA SELECCIONADA: $CARTA CARTA SIGUIENTE: ${ESPADAS[i+1]} CARTA ANTERIOR: ${ESPADAS[i-1]} "
                 if [[ "$CARTA" == "${ESPADAS[i]}" ]]; then
-                    if [[ "${ESPADAS[i+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[i-1]}" == "(+) $((NUMERO - 1)) de espadas" ]]; then
-
+                    if [[ "${ESPADAS[i+1]}" == "(+) $((NUMERO + 1)) de espadas" ]] || [[ "${ESPADAS[i-1]}" == "(+) $((NUMERO - 1)) de espadas" ]] || { [[ "$NUMERO" == "7" && "${ESPADAS[i+1]}" == "(+) 10 de espadas" ]] || [[ "$NUMERO" == "10" && "${ESPADAS[i-1]}" == "(+) 7 de espadas" ]]; }; then
                         ESPADAS[i]="(+) ${NUMERO} de espadas"
                         echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de espadas"
                         JUGADOR1[INDICE_REAL]=""
@@ -825,9 +822,9 @@ fi
             ;;
         "oros")
             for ((i = 0; i < 10; i++)); do
+            echo "CARTA SELECCIONADA: $CARTA CARTA SIGUIENTE: ${OROS[i+1]} CARTA ANTERIOR: ${OROS[i-1]} "
                 if [[ "$CARTA" == "${OROS[i]}" ]]; then
-                    if [[ "${OROS[i+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[i-1]}" == "(+) $((NUMERO - 1)) de oros" ]]; then
-
+                    if [[ "${OROS[i+1]}" == "(+) $((NUMERO + 1)) de oros" ]] || [[ "${OROS[i-1]}" == "(+) $((NUMERO - 1)) de oros" ]] || { [[ "$NUMERO" == "7" && "${OROS[i+1]}" == "(+) 10 de oros" ]] || [[ "$NUMERO" == "10" && "${OROS[i-1]}" == "(+) 7 de oros" ]]; }; then
                         OROS[i]="(+) ${NUMERO} de oros"
                         echo "JUGADOR $TURNO PONE CARTA: ${NUMERO} de oros"
                         JUGADOR1[INDICE_REAL]=""
