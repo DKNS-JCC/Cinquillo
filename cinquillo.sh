@@ -840,6 +840,7 @@ if [ "$puede" = false ]; then
     return
 else
     while true; do
+    colocada=false
         read -p "Selecciona una carta para colocar (índice): " INDICE
         if [[ "$INDICE" =~ ^[0-9]+$ ]]; then
             if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le ${NUMERO_CARTAS_JUGADOR1} ]; then
@@ -859,7 +860,7 @@ if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${NUMERO_CARTAS_JUGADOR1}" ]; then
     if [ -n "$CARTA" ]; then
         PALO=$(echo "$CARTA" | cut -d " " -f 3)
         NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
-        if [ "$NUMERO" == "5" ]; then ################################
+        if [ "$NUMERO" == "5" ]; then 
             case $PALO in
                 "bastos")
                     BASTOS[4]="(+) 5 de bastos"
@@ -880,48 +881,52 @@ if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${NUMERO_CARTAS_JUGADOR1}" ]; then
             #clear
             mostrar_tablero
 
-        elif [[ "$NUMERO" == "10" ]]; then ###########################
+        elif [[ "$NUMERO" == "10" ]]; then
             case $PALO in
                 "bastos")
                     for ((j = 0; j < 10; j++)); do
                         if [[ "${BASTOS[j-1]}" == "(+) 7 de bastos" ]]; then
                             BASTOS[j]="(+) $NUMERO de bastos"
+                            colocada=true
                             echo "JUGADOR $TURNO PONE CARTA: $NUMERO de bastos"
                             JUGADOR1[INDICE_REAL]=""
-                            break
-                        else
-                            echo "No puedes colocar esa carta."
-                            turno_usuario
-                        fi
+                            break                           
+                        fi                       
                     done
+                    if [ "$colocada" == false ]; then
+                        echo "No puedes colocar esa carta"
+                        turno_usuario
+                    fi
                 ;;
                 "copas")
                     for ((j = 0; j < 10; j++)); do
-                        if [["${COPAS[j-1]}" == "(+) 7 de copas" ]]; then
+                        if [[ "${COPAS[j-1]}" == "(+) 7 de copas" ]]; then
                             COPAS[j]="(+) $NUMERO de copas"
+                            colocada=true
                             echo "JUGADOR $TURNO PONE CARTA: $NUMERO de copas"
                             JUGADOR1[INDICE_REAL]=""
-                            break
-                        else
-                            echo "No puedes colocar esa carta."
-                            turno_usuario
-                        
+                            break                        
                         fi
                     done
+                    if [ "$colocada" == false ]; then
+                        echo "No puedes colocar esa carta"
+                        turno_usuario
+                    fi
                 ;;
                 "espadas")
                     for ((j = 0; j < 10; j++)); do
                         if [[ "${ESPADAS[j-1]}" == "(+) 7 de espadas" ]]; then
                             ESPADAS[j]="(+) $NUMERO de espadas"
+                            colocada=true
                             echo "JUGADOR $TURNO PONE CARTA: $NUMERO de espadas"
                             JUGADOR1[INDICE_REAL]=""
-                            break
-                        else
-                            echo "No puedes colocar esa carta."
-                            turno_usuario
-                        
+                            break                        
                         fi
                     done
+                    if [ "$colocada" == false ]; then
+                        echo "No puedes colocar esa carta"
+                        turno_usuario
+                    fi
                 ;;
                 "oros")
                     for ((j = 0; j < 10; j++)); do
@@ -930,11 +935,12 @@ if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${NUMERO_CARTAS_JUGADOR1}" ]; then
                             echo "JUGADOR $TURNO PONE CARTA: $NUMERO de oros"
                             JUGADOR1[INDICE_REAL]=""
                             break
-                        else
-                            echo "No puedes colocar esa carta."
-                            turno_usuario
                         fi
                     done
+                    if [ "$colocada" == false ]; then
+                        echo "No puedes colocar esa carta"
+                        turno_usuario
+                    fi
                     ;;
             esac
             #clear
@@ -946,62 +952,69 @@ if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${NUMERO_CARTAS_JUGADOR1}" ]; then
                 for ((j = 0; j < 10; j++)); do
 if [[ "${BASTOS[j+1]}" == "(+) $((NUMERO+1)) de bastos" || "${BASTOS[j-1]}" == "(+) $((NUMERO-1)) de bastos" ]]; then
                         BASTOS[j]="(+) $NUMERO de bastos"
+                        colocada=true
                         echo "JUGADOR $TURNO PONE CARTA: $NUMERO de bastos"
                         JUGADOR1[INDICE_REAL]=""
                         break
-                    else
-                        echo "No puedes colocar esa carta."
-                        turno_usuario                        
                     fi
                 done
+                if [ "$colocada" == false ]; then
+                    echo "No puedes colocar esa carta"
+                    turno_usuario
+                fi
             ;;
             "copas")
                 for ((j = 0; j < 10; j++)); do
 if [[ "${COPAS[j+1]}" == "(+) $((NUMERO+1)) de copas" || "${COPAS[j-1]}" == "(+) $((NUMERO-1)) de copas" ]]; then
                         COPAS[j]="(+) $NUMERO de copas"
+                        colocada=true
                         echo "JUGADOR $TURNO PONE CARTA: $NUMERO de copas"
                         JUGADOR1[INDICE_REAL]=""
                         break
-                    else
-                        echo "No puedes colocar esa carta."
-                        turno_usuario
                     fi
                 done
+                if [ "$colocada" == false ]; then
+                    echo "No puedes colocar esa carta"
+                    turno_usuario
+                fi
             ;;
             "espadas")
                 for ((j = 0; j < 10; j++)); do
 if [[ "${ESPADAS[j+1]}" == "(+) $((NUMERO+1)) de espadas" || "${ESPADAS[j-1]}" == "(+) $((NUMERO-1)) de espadas" ]]; then
                         ESPADAS[j]="(+) $NUMERO de espadas"
+                        colocada=true
                         echo "JUGADOR $TURNO PONE CARTA: $NUMERO de espadas"
                         JUGADOR1[INDICE_REAL]=""
                         break
-                    else
-                        echo "No puedes colocar esa carta."
-                        turno_usuario
-                    fi
-                    
+                    fi                   
                 done
+                if [ "$colocada" == false ]; then
+                    echo "No puedes colocar esa carta"
+                    turno_usuario
+                fi
             ;;
             "oros")
                 for ((j = 0; j < 10; j++)); do
 if [[ "${OROS[j+1]}" == "(+) $((NUMERO+1)) de oros" || "${OROS[j-1]}" == "(+) $((NUMERO-1)) de oros" ]]; then
                         OROS[j]="(+) $NUMERO de oros"
+                        colocada=true
                         echo "JUGADOR $TURNO PONE CARTA: $NUMERO de oros"
                         JUGADOR1[INDICE_REAL]=""
                         break
-                    else
-                        echo "No puedes colocar esa carta."
-                        turno_usuario
                     fi
                 done
+                if [ "$colocada" == false ]; then
+                    echo "No puedes colocar esa carta"
+                    turno_usuario
+                fi
                 ;;
         esac
         #clear
         mostrar_tablero
-    else
-        echo "CARTA NO VALIDA"
-        turno_usuario
     fi
+else
+    echo "Ya has colocado esa carta"
+    turno_usuario
 fi
 fi
 
