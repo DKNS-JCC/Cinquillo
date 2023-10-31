@@ -79,20 +79,18 @@ function configuracion
                 ;;
             3)
                 clear
-                echo -n "Seleccione la ruta donde se guardará o se encuentra el registro..."
-                read N_LOG
-
-                if [ ! -d "N_LOG" ]
-                then
-                    echo "ERROR: El directorio no existe o no es correcto."
-                else
-                    LOG=$N_LOG
+                
+                echo "Introduce el nombre del archivo:"
+                read ARCHIVO                
+                if [[ -f $ARCHIVO ]]; then
+                    LOG="$(pwd)/$ARCHIVO"
                     echo JUGADORES=$JUGADORES > config.cfg
                     echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
                     echo LOG=$LOG >> config.cfg
-                    clear
+                else
+                    echo "El archivo \"$nombre_archivo\" no existe o no es un archivo regular."
                     echo "LOG actualizado a $LOG"
-                fi
+                fi                   
                 ;;
             4)
                 clear
@@ -435,7 +433,6 @@ done
 ########################################################### FINAL DE PARTIDA #####################################################################
 
 HORA_FIN=$(date +%s)
-TIEMPO_PARTIDA=$((HORA_FIN - HORA_INICIO))
 
 if [ $VACIO==1 ]; then
     echo "HAS GANADO LA PARTIDA JUGADOR 1"
@@ -453,9 +450,12 @@ fi
 
 
 conteo_puntos
+escribir_fichero
 
 echo "HAS CONSEGUIDO $PUNTOS_GANADOR en $CONTADOR_TURNOS turnos y $TIEMPO_PARTIDA segundos!!!"
 read
+return
+
 }
 
 function turno_maquina {
@@ -1046,6 +1046,18 @@ function comprobar_vacios {
             VACIO=4
         done
     fi
+
+}
+
+function escribir_fichero {
+    FECHA=$(date +%d-%m-%Y)
+    HORA=$(date +%H:%M:%S)
+    TIEMPO_PARTIDA=$((HORA_FIN - HORA_INICIO))
+    RONDAS=$((CONTADOR_TURNOS / JUGADORES))
+    GANADOR="$VACIO"
+    PUNTOS="$PUNTOS_GANADOR"
+
+    echo "$FECHA;$HORA;$TIEMPO_PARTIDA;$RONDAS;$GANADOR;$PUNTOS" >> "$LOG"
 
 }
 
