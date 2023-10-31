@@ -382,7 +382,7 @@ function juego {
 while [ $VACIO -eq 0 ];
 do
     comprobar_vacios
-    echo "fin? $VACIO"
+
     if [ ! "$VACIO" == "0" ]; then
         break
     fi
@@ -455,16 +455,12 @@ fi
 conteo_puntos
 
 echo "HAS CONSEGUIDO $PUNTOS_GANADOR en $CONTADOR_TURNOS turnos y $TIEMPO_PARTIDA segundos!!!"
-
+read
 }
 
 function turno_maquina {
 case $ESTRATEGIA in
 0)
-    for ((i=0;i<13;i++));do
-        echo "MANO JUGADOR INDICE $((i+1)): ${CARTAS_JUGADOR[i]}"
-
-    done
     for ((i = 0; i < $NUMERO_CARTAS_TOTAL && $TURNO_JUGADOR==$TURNO; i++)); do
         if [ ! -z "${CARTAS_JUGADOR[i]}" ]; then
             CARTA="${CARTAS_JUGADOR[i]}"
