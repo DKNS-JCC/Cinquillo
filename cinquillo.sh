@@ -111,7 +111,7 @@ function Comprobaciones
     then
         echo "El archivo de configuración 'config.cfg' no se ha encontrado en este directorio o esta vacío."
         echo "Por favor, asegúrese de crear el archivo de configuración antes de ejecutar este juego."
-        read opcion
+        read 
         exit -1
     fi
     # Comprobar si el archivo de configuración tiene permisos de lectura y escritura
@@ -126,6 +126,7 @@ function Comprobaciones
     then
         clear
         echo "ERROR: El archivo de configuración 'config.cfg' no es correcto"
+        read
         exit -1
     fi
 }
@@ -396,6 +397,7 @@ else
             echo
             turno_usuario
             TURNO=2
+            comprobar_vacios
             ;;
         2)
             echo
@@ -405,6 +407,7 @@ else
             CARTAS_JUGADOR=("${JUGADOR2[@]}")
             TURNO_JUGADOR=$TURNO
             turno_maquina
+            comprobar_vacios
             ;;
         3)
             echo
@@ -414,6 +417,7 @@ else
             CARTAS_JUGADOR=("${JUGADOR3[@]}")
             TURNO_JUGADOR=$TURNO
             turno_maquina
+            comprobar_vacios
             ;;
         4)
             echo
@@ -423,6 +427,7 @@ else
             CARTAS_JUGADOR=("${JUGADOR4[@]}")
             TURNO_JUGADOR=$TURNO
             turno_maquina
+            comprobar_vacios
             ;;
         *)
             echo "ERROR: TURNO NO VÁLIDO"
@@ -435,16 +440,16 @@ done
 
 HORA_FIN=$(date +%s)
 
-if [ $VACIO==1 ]; then
+if [ "$VACIO" == "1" ]; then
     echo "HAS GANADO LA PARTIDA JUGADOR 1"
 fi
-if [ $VACIO==2 ]; then
+if [ "$VACIO" == "2" ]; then
     echo "HAS GANADO LA PARTIDA JUGADOR 2"
 fi
-if [ $VACIO==3 ]; then
+if [ "$VACIO" == "3" ]; then
     echo "HAS GANADO LA PARTIDA JUGADOR 3"
 fi
-if [ $VACIO==4 ]; then
+if [ "$VACIO" == "4" ]; then
     echo "HAS GANADO LA PARTIDA JUGADOR 4"
 fi
 
@@ -452,8 +457,19 @@ fi
 
 conteo_puntos
 escribir_fichero
+echo
+echo "                  {}"
+echo "                 /__\\"
+echo "               /|    |\\"
+echo "              (_| J$VACIO |_)"
+echo "                 \  /"
+echo "                  )("
+echo "                _|__|_"
+echo "              _|______|_"
+echo "             |__________|"
+echo
 
-echo "HAS CONSEGUIDO $PUNTOS_GANADOR en $CONTADOR_TURNOS turnos y $TIEMPO_PARTIDA segundos!!!"
+echo "JUGADOR $VACIO HAS CONSEGUIDO $PUNTOS_GANADOR puntos en $CONTADOR_TURNOS turnos y $TIEMPO_PARTIDA segundos!!!"
 read
 return
 
@@ -932,6 +948,7 @@ if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${NUMERO_CARTAS_JUGADOR1}" ]; then
                     for ((j = 0; j < 10; j++)); do
                         if [[ "${OROS[j-1]}" == "(+) 7 de oros" ]]; then
                             OROS[j]="(+) $NUMERO de oros"
+                            colocada=true
                             echo "JUGADOR $TURNO PONE CARTA: $NUMERO de oros"
                             JUGADOR1[INDICE_REAL]=""
                             break
@@ -1088,7 +1105,7 @@ function comprobar_vacios {
             VACIO=4
         done
     fi
-
+    echo "VACIO: $VACIO"
 }
 
 function escribir_fichero {
