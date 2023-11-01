@@ -1356,60 +1356,37 @@ fi
 }
 
 function clasificacion {
+if [ -f "$LOG" ]; then
+    if [ ! -s "$LOG" ]; then
+        echo "El archivo de registro '$LOG' esta vacio juega una partida para ver las estadisticas"
+        return
+    fi
     PARTIDA_MAS_CORTA=""
     PARTIDA_MAS_LARGA=""
-    PARTIDA_CON_MAS_RONDAS=""
-    PARTIDA_CON_MENOS_RONDAS=""
-    PARTIDA_CON_MAS_PUNTOS=""
-    PARTIDA_CON_MAS_CARTAS=""
+    PARTIDA_MAS_RONDAS=""
+    PARTIDA_MENOS_RONDAS=""
+    PARTIDA_MAS_PUNTOS=""
+    PARTIDA_MAS_CARTAS=""
+
+    # Partida más corta
+    PARTIDA_MAS_CORTA=$(sort -t "|" -k 4 -n "$LOG" | head -n 1)
+
+    # Partida más larga
+    PARTIDA_MAS_LARGA=$(sort -t "|" -k 4 -n "$LOG" | tail -n 1)
+
+    # Partida con más rondas
+    PARTIDA_MAS_RONDAS=$(sort -t "|" -k 5 -n "$LOG" | tail -n 1)
+
+    # Partida con menos rondas
+    PARTIDA_MENOS_RONDAS=$(sort -t "|" -k 5 -n "$LOG" | head -n 1)
+
+    # Partida con más puntos
+    PARTIDA_MAS_PUNTOS=$(sort -t "|" -k 7 -n "$LOG" | tail -n 1)
+
+    # Partida con más cartas
+    PARTIDA_MAS_CARTAS=$(awk -F '|' '{split($8, a, "-"); max = a[1]; for (i = 2; i <= 4; i++) if (a[i] > max) max = a[i]} max > maxval {maxval = max; maxline = $0} END {print maxline}' fichero.log)
 
 
-    while IFS= read -r linea; do
-        fecha=$(echo "$linea" | cut -d "|" -f 1)
-        hora=$(echo "$linea" | cut -d "|" -f 2)
-        jugadores=$(echo "$linea" | cut -d "|" -f 3)
-        rondas=$(echo "$linea" | cut -d "|" -f 4)
-        tiempo=$(echo "$linea" | cut -d "|" -f 5)
-        jugador_ganador=$(echo "$linea" | cut -d "|" -f 6)
-        puntos=$(echo "$linea" | cut -d "|" -f 7)
-        cartas=$(echo "$linea" | cut -d "|" -f 8)
-
-
-        if [[ -z $PARTIDA_MAS_CORTA || $tiempo -lt $TIEMPO_MAS_CORTO ]]; then
-            TIEMPO_MAS_CORTO=$tiempo
-            PARTIDA_MAS_CORTA="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
-        fi
-
-
-        if [[ -z $PARTIDA_MAS_LARGA || $tiempo -gt $TIEMPO_MAS_LARGO ]]; then
-            TIEMPO_MAS_LARGO=$tiempo
-            PARTIDA_MAS_LARGA="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
-        fi
-
-
-        if [[ -z $PARTIDA_CON_MAS_RONDAS || $rondas -gt $RONDAS_MAS_RONDAS ]]; then
-            RONDAS_MAS_RONDAS=$rondas
-            PARTIDA_CON_MAS_RONDAS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
-        fi
-
-
-        if [[ -z $PARTIDA_CON_MENOS_RONDAS || $rondas -lt $RONDAS_MENOS_RONDAS ]]; then
-            RONDAS_MENOS_RONDAS=$rondas
-            PARTIDA_CON_MENOS_RONDAS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
-        fi
-
-
-        if [[ -z $PARTIDA_CON_MAS_PUNTOS || $puntos -gt $PUNTOS_MAS_PUNTOS ]]; then
-            PUNTOS_MAS_PUNTOS=$puntos
-            PARTIDA_CON_MAS_PUNTOS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
-        fi
-
-
-        if [[ -z $PARTIDA_CON_MAS_CARTAS || $cartas -gt $CARTAS_MAS_CARTAS ]]; then
-            CARTAS_MAS_CARTAS=$cartas
-            PARTIDA_CON_MAS_CARTAS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
-        fi
-    done < fichero.log
 
     clear
     echo
@@ -1417,16 +1394,18 @@ function clasificacion {
     echo "              CLASIFICACION     "
     echo "      =========================="
     echo
+    echo "                                  Fecha|Hora|Jugadores|TiempoTotal|Rondas|Ganador|Puntos|CartasJugadores"
+    echo "DATOS partida más corta:          $PARTIDA_MAS_CORTA "
+    echo "DATOS partida más larga:          $PARTIDA_MAS_LARGA "
+    echo "DATOS partida con más rondas:     $PARTIDA_MAS_RONDAS "
+    echo "DATOS partida con menos rondas:   $PARTIDA_MENOS_RONDAS "
+    echo "DATOS partida con más puntos:     $PARTIDA_MAS_PUNTOS "
+    echo "DATOS partida con más cartas:     $PARTIDA_MAS_CARTAS "
 
-    echo "Partida más corta          =>            $PARTIDA_MAS_CORTA"
-    echo "Partida más larga          =>            $PARTIDA_MAS_LARGA"
-    echo "Partida con más rondas     =>            $PARTIDA_CON_MAS_RONDAS"
-    echo "Partida con menos rondas   =>            $PARTIDA_CON_MENOS_RONDAS"
-    echo "Partida con más puntos     =>            $PARTIDA_CON_MAS_PUNTOS"
-    echo "Partida con más cartas para un jugador   $PARTIDA_CON_MAS_CARTAS"
+
     echo
     read -p "Pulse una tecla para continuar..."
-
+fi
 }
 
 
