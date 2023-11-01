@@ -375,64 +375,63 @@ function juego {
     repartir_por_jugadores
     mostrar_tablero
     buscar_5oros
-    VACIO=0
+    comprobar_vacios
 
 while [ "$VACIO" == "0" ];
 do
     comprobar_vacios
 
-if [ ! "$VACIO" == "0" ]; then
-    break
-else
-    CONTADOR_TURNOS=$((CONTADOR_TURNOS + 1))
-    # Si el turno es mayor que el número de jugadores, se reinicia el turno
-    if [ $TURNO -gt $JUGADORES ]; then
-        TURNO=1
+    if [ ! "$VACIO" == "0" ]; then
+        break
+    else
+        CONTADOR_TURNOS=$((CONTADOR_TURNOS + 1))
+        # Si el turno es mayor que el número de jugadores, se reinicia el turno
+        if [ $TURNO -gt $JUGADORES ]; then
+            TURNO=1
+        fi
+        case $TURNO in
+            1)  
+                echo
+                echo "------------> TURNO DEL JUGADOR $TURNO <------------"
+                echo
+                turno_usuario
+                TURNO=2
+                comprobar_vacios
+                ;;
+            2)
+                echo
+                echo "------------> TURNO DEL JUGADOR $TURNO <------------"
+                echo
+                NUMERO_CARTAS_TOTAL=$NUMERO_CARTAS_JUGADOR2
+                CARTAS_JUGADOR=("${JUGADOR2[@]}")
+                TURNO_JUGADOR=$TURNO
+                turno_maquina
+                comprobar_vacios
+                ;;
+            3)
+                echo
+                echo "------------> TURNO DEL JUGADOR $TURNO <------------"
+                echo
+                NUMERO_CARTAS_TOTAL=$NUMERO_CARTAS_JUGADOR3
+                CARTAS_JUGADOR=("${JUGADOR3[@]}")
+                TURNO_JUGADOR=$TURNO
+                turno_maquina
+                comprobar_vacios
+                ;;
+            4)
+                echo
+                echo "------------> TURNO DEL JUGADOR $TURNO <------------"
+                echo
+                NUMERO_CARTAS_TOTAL=$NUMERO_CARTAS_JUGADOR4
+                CARTAS_JUGADOR=("${JUGADOR4[@]}")
+                TURNO_JUGADOR=$TURNO
+                turno_maquina
+                comprobar_vacios
+                ;;
+            *)
+                echo "ERROR: TURNO NO VÁLIDO"
+        esac
     fi
-
-    case $TURNO in
-        1)  
-            echo
-            echo "------------> TURNO DEL JUGADOR $TURNO <------------"
-            echo
-            turno_usuario
-            TURNO=2
-            comprobar_vacios
-            ;;
-        2)
-            echo
-            echo "------------> TURNO DEL JUGADOR $TURNO <------------"
-            echo
-            NUMERO_CARTAS_TOTAL=$NUMERO_CARTAS_JUGADOR2
-            CARTAS_JUGADOR=("${JUGADOR2[@]}")
-            TURNO_JUGADOR=$TURNO
-            turno_maquina
-            comprobar_vacios
-            ;;
-        3)
-            echo
-            echo "------------> TURNO DEL JUGADOR $TURNO <------------"
-            echo
-            NUMERO_CARTAS_TOTAL=$NUMERO_CARTAS_JUGADOR3
-            CARTAS_JUGADOR=("${JUGADOR3[@]}")
-            TURNO_JUGADOR=$TURNO
-            turno_maquina
-            comprobar_vacios
-            ;;
-        4)
-            echo
-            echo "------------> TURNO DEL JUGADOR $TURNO <------------"
-            echo
-            NUMERO_CARTAS_TOTAL=$NUMERO_CARTAS_JUGADOR4
-            CARTAS_JUGADOR=("${JUGADOR4[@]}")
-            TURNO_JUGADOR=$TURNO
-            turno_maquina
-            comprobar_vacios
-            ;;
-        *)
-            echo "ERROR: TURNO NO VÁLIDO"
-    esac
-fi
 done
 
 
@@ -441,15 +440,19 @@ done
 HORA_FIN=$(date +%s)
 
 if [ "$VACIO" == "1" ]; then
+    echo
     echo "====== HAS GANADO LA PARTIDA JUGADOR 1 ======"
 fi
 if [ "$VACIO" == "2" ]; then
+    echo
     echo "====== HAS GANADO LA PARTIDA JUGADOR 2 ======"
 fi
 if [ "$VACIO" == "3" ]; then
+    echo
     echo "====== HAS GANADO LA PARTIDA JUGADOR 3 ======"
 fi
 if [ "$VACIO" == "4" ]; then
+    echo
     echo "====== HAS GANADO LA PARTIDA JUGADOR 4 ======"
 fi
 
@@ -1129,42 +1132,64 @@ function conteo_puntos {
 function comprobar_vacios {
     VACIO=0
 
-    for (( k=0;k < $NUMERO_CARTAS_JUGADOR1; k++ )); do
+    # Comprueba el mazo del jugador 1
+    for ((k=0; k < $NUMERO_CARTAS_JUGADOR1; k++)); do
         if [ -n "${JUGADOR1[k]}" ]; then
             VACIO=0
             break
+        else
+            VACIO=1
         fi
-        VACIO=1
     done
+    if [ "$VACIO" == "1" ]; then
+        return
+    fi
 
-    for (( k=0;k < $NUMERO_CARTAS_JUGADOR2; k++ )); do
+    # Comprueba el mazo del jugador 2
+    for ((k=0; k < $NUMERO_CARTAS_JUGADOR2; k++)); do
         if [ -n "${JUGADOR2[k]}" ]; then
             VACIO=0
             break
+        else
+            VACIO=2
         fi
-        VACIO=2
     done
+    if [ "$VACIO" == "2" ]; then
+        return
+    fi
 
+    # Comprueba el mazo del jugador 3 si hay al menos 3 jugadores
     if [ "$JUGADORES" -ge 3 ]; then
-        for (( k=0;k < $NUMERO_CARTAS_JUGADOR3; k++ )); do
+        for ((k=0; k < $NUMERO_CARTAS_JUGADOR3; k++)); do
             if [ -n "${JUGADOR3[k]}" ]; then
                 VACIO=0
                 break
+            else
+                VACIO=3
+
             fi
-            VACIO=3
         done
     fi
+    if [ "$VACIO" == "3" ]; then
+        return
+    fi
 
+    # Comprueba el mazo del jugador 4 si hay 4 jugadores
     if [ "$JUGADORES" -eq 4 ]; then
-        for (( k=0;k < $NUMERO_CARTAS_JUGADOR4; k++ )); do
+        for ((k=0; k < $NUMERO_CARTAS_JUGADOR4; k++)); do
             if [ -n "${JUGADOR4[k]}" ]; then
                 VACIO=0
                 break
+            else
+                VACIO=4
+
             fi
-            VACIO=4
         done
     fi
-    echo "VACIO: $VACIO"
+    if [ "$VACIO" == "4" ]; then
+        return
+    fi
+
 }
 
 function escribir_fichero {
