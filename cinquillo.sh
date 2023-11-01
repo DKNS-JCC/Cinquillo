@@ -1255,7 +1255,7 @@ function contar_cartas {
 }
 
 function escribir_fichero {
-    FECHA=$(date +%d-%m-%Y)
+    FECHA=$(date +%d%m%Y)
     HORA=$(date +%H:%M:%S)
     TIEMPO_PARTIDA=$((HORA_FIN - HORA_INICIO))
     RONDAS=$((CONTADOR_TURNOS / JUGADORES))
