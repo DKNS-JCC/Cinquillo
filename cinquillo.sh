@@ -83,6 +83,7 @@ function configuracion
                 echo "Introduce el nombre del archivo:"
                 read ARCHIVO                
                 if [[ -f $ARCHIVO ]]; then
+                    Comprobaciones_log
                     LOG="$(pwd)/$ARCHIVO"
                     echo JUGADORES=$JUGADORES > config.cfg
                     echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
@@ -102,9 +103,10 @@ function configuracion
                 ;;
         esac
     done
+    Comprobaciones_cfg
 }
 
-function Comprobaciones
+function Comprobaciones_cfg
 {
     # Comprobar si existe el archivo de configuración
     if [ ! -f "config.cfg" ] || [ ! -s "config.cfg" ]
@@ -128,6 +130,23 @@ function Comprobaciones
         echo "ERROR: El archivo de configuración 'config.cfg' no es correcto"
         read
         exit -1
+    fi
+}
+
+function Comprobaciones_log {
+    # Comprobar si existe el archivo de log
+    if [ ! -f "$LOG" ]
+    then
+        echo "El archivo de log '$LOG' no se ha encontrado en este directorio."
+        echo "Por favor, asegúrese de configurar el archivo de log antes de jugar."
+        read
+    else    
+        if [ ! -r "$LOG" ] && [ ! -w "$LOG" ]
+        then
+            echo "No tienes permisos de lectura y/o escritura en el archivo $LOG."
+            read
+            exit -1
+        fi
     fi
 }
 
@@ -1114,19 +1133,20 @@ function conteo_puntos {
         NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
         PUNTOS_GANADOR=$((PUNTOS_GANADOR + NUMERO))
     done
-
-    for ((i = 0; i < $NUMERO_CARTAS_JUGADOR3; i++)); do
-        CARTA="${JUGADOR3[i]}"
-        NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
-        PUNTOS_GANADOR=$((PUNTOS_GANADOR + NUMERO))
-    done
-
-    for ((i = 0; i < $NUMERO_CARTAS_JUGADOR4; i++)); do
-        CARTA="${JUGADOR4[i]}"
-        NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
-        PUNTOS_GANADOR=$((PUNTOS_GANADOR + NUMERO))
-    done
-    
+    if [ "$JUGADORES" -ge 3 ]; then
+        for ((i = 0; i < $NUMERO_CARTAS_JUGADOR3; i++)); do
+            CARTA="${JUGADOR3[i]}"
+            NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
+            PUNTOS_GANADOR=$((PUNTOS_GANADOR + NUMERO))
+        done
+    fi
+    if [ "$JUGADORES" -eq 4 ]; then
+        for ((i = 0; i < $NUMERO_CARTAS_JUGADOR4; i++)); do
+            CARTA="${JUGADOR4[i]}"
+            NUMERO=$(echo "$CARTA" | cut -d " " -f 1)
+            PUNTOS_GANADOR=$((PUNTOS_GANADOR + NUMERO))
+        done
+    fi
 }
 
 function comprobar_vacios {
@@ -1192,6 +1212,45 @@ function comprobar_vacios {
 
 }
 
+function contar_cartas {
+    NUMERO_CARTAS_JUGADOR1=0
+    NUMERO_CARTAS_JUGADOR2=0
+    NUMERO_CARTAS_JUGADOR3=0
+    NUMERO_CARTAS_JUGADOR4=0
+
+    for ((i = 0; i < ${#JUGADOR1[@]}; i++)); do
+        if [ -n "${JUGADOR1[i]}" ]; then
+            NUMERO_CARTAS_JUGADOR1=$((NUMERO_CARTAS_JUGADOR1 + 1))
+        fi
+    done
+
+    for ((i = 0; i < ${#JUGADOR2[@]}; i++)); do
+        if [ -n "${JUGADOR2[i]}" ]; then
+            NUMERO_CARTAS_JUGADOR2=$((NUMERO_CARTAS_JUGADOR2 + 1))
+        fi
+    done
+
+    if [ "$JUGADORES" -ge 3 ]; then
+        for ((i = 0; i < ${#JUGADOR3[@]}; i++)); do
+            if [ -n "${JUGADOR3[i]}" ]; then
+                NUMERO_CARTAS_JUGADOR3=$((NUMERO_CARTAS_JUGADOR3 + 1))
+            fi
+        done
+    else
+        NUMERO_CARTAS_JUGADOR3=*
+    fi
+
+    if [ "$JUGADORES" -eq 4 ]; then
+        for ((i = 0; i < ${#JUGADOR4[@]}; i++)); do
+            if [ -n "${JUGADOR4[i]}" ]; then
+                NUMERO_CARTAS_JUGADOR4=$((NUMERO_CARTAS_JUGADOR4 + 1))
+            fi
+        done
+    else 
+        NUMERO_CARTAS_JUGADOR4=*
+    fi
+}
+
 function escribir_fichero {
     FECHA=$(date +%d-%m-%Y)
     HORA=$(date +%H:%M:%S)
@@ -1199,10 +1258,93 @@ function escribir_fichero {
     RONDAS=$((CONTADOR_TURNOS / JUGADORES))
     GANADOR="$VACIO"
     PUNTOS="$PUNTOS_GANADOR"
+    contar_cartas
+    echo "$FECHA|$HORA|$JUGADORES|$TIEMPO_PARTIDA|$RONDAS|$GANADOR|$PUNTOS|$NUMERO_CARTAS_JUGADOR1-$NUMERO_CARTAS_JUGADOR2-$NUMERO_CARTAS_JUGADOR3-$NUMERO_CARTAS_JUGADOR4" >> "$LOG"   
+}
 
-    echo "$FECHA;$HORA;$TIEMPO_PARTIDA;$RONDAS;$GANADOR;$PUNTOS" >> "$LOG"
+function estadisticas {
+
+if [ -f "$LOG"  &&  -s "$LOG" ]; then
+    # Número total de partidas jugadas según líneas
+    TOTAL_PARTIDAS=0
+    TOTAL_PARTIDAS=$(wc -l < "$LOG")
+
+    # Media de los tiempos de todas las partidas jugadas
+    TOTAL_TIEMPO=0
+    MEDIA_TIEMPO=0
+    for ((i = 1; i <= $TOTAL_PARTIDAS; i++)); do
+        #sed -n no imprime lo procesado y {i}p imprime la línea i
+        TIEMPO_PARTIDA=$(sed -n "${i}p" "$LOG" | cut -d "|" -f 4)
+        TOTAL_TIEMPO=$((TOTAL_TIEMPO + TIEMPO_PARTIDA))
+    done
+    MEDIA_TIEMPO=$(($TOTAL_TIEMPO / $TOTAL_PARTIDAS))
+
+    # Tiempo total invertido en todas las partidas
+    TIEMPO_TOTAL=$TOTAL_TIEMPO
+
+    # Media de los puntos obtenidos por el ganador en todas las partidas
+    TOTAL_PUNTOS=0
+    MEDIA_PUNTOS_GANADOR=0
+    for ((i = 1; i <= $TOTAL_PARTIDAS; i++)); do
+        PUNTOS_GANADOR_E=$(sed -n "${i}p" "$LOG" | cut -d "|" -f 7)
+        TOTAL_PUNTOS=$((TOTAL_PUNTOS + PUNTOS_GANADOR_E))
+    done
+    MEDIA_PUNTOS_GANADOR=$(($TOTAL_PUNTOS / $TOTAL_PARTIDAS))
+
+    # Porcentaje de partidas ganadas por cada jugador
+    VICTORIAS_JUGADOR_1=0
+    VICTORIAS_JUGADOR_2=0
+    VICTORIAS_JUGADOR_3=0
+    VICTORIAS_JUGADOR_4=0
+    
+    PARTIDAS_JUGADOR_1=0
+    PARTIDAS_JUGADOR_2=0
+    PARTIDAS_JUGADOR_3=0
+    PARTIDAS_JUGADOR_4=0
+    
+    # Contabiliza las victorias de cada jugador y las partidas jugadas
+    for ((i = 1; i <= $TOTAL_PARTIDAS; i++)); do
+        GANADOR=$(sed -n "${i}p" "$LOG" | cut -d "|" -f 6)
+        case $GANADOR in
+            1)
+                VICTORIAS_JUGADOR_1=$((VICTORIAS_JUGADOR_1 + 1))
+                ;;
+            2)
+                VICTORIAS_JUGADOR_2=$((VICTORIAS_JUGADOR_2 + 1))
+                ;;
+            3)
+                VICTORIAS_JUGADOR_3=$((VICTORIAS_JUGADOR_3 + 1))
+                ;;
+            4)
+                VICTORIAS_JUGADOR_4=$((VICTORIAS_JUGADOR_4 + 1))
+                ;;
+        esac
+        PARTIDAS_JUGADOR_1=$((PARTIDAS_JUGADOR_1 + 1))
+    done
+        PORCENTAJE_GANADAS_1=$((VICTORIAS_JUGADOR_1 * 100 / PARTIDAS_JUGADOR_1))
+        PORCENTAJE_GANADAS_2=$((VICTORIAS_JUGADOR_2 * 100 / PARTIDAS_JUGADOR_1))
+        PORCENTAJE_GANADAS_3=$((VICTORIAS_JUGADOR_3 * 100 / PARTIDAS_JUGADOR_1))
+        PORCENTAJE_GANADAS_4=$((VICTORIAS_JUGADOR_4 * 100 / PARTIDAS_JUGADOR_1))
+
+    clear
+
+    # Mostrar las estadísticas
+    echo "Número total de partidas jugadas: $TOTAL_PARTIDAS"
+    echo "Media de los tiempos de todas las partidas jugadas: $MEDIA_TIEMPO segundos"
+    echo "Tiempo total invertido en todas las partidas: $TIEMPO_TOTAL segundos"
+    echo "Media de los puntos obtenidos por el ganador en todas las partidas: $MEDIA_PUNTOS_GANADOR puntos"
+    echo "Porcentaje de partidas ganadas del jugador 1: $PORCENTAJE_GANADAS_1%"
+    echo "Porcentaje de partidas ganadas del jugador 2: $PORCENTAJE_GANADAS_2%"
+    echo "Porcentaje de partidas ganadas del jugador 3: $PORCENTAJE_GANADAS_3%"
+    echo "Porcentaje de partidas ganadas del jugador 4: $PORCENTAJE_GANADAS_4%"
+else
+    echo "El archivo de registro '$LOG' no existe o esta vacio"
+fi
+    echo
+    read -p "Pulse una tecla para continuar..."
 
 }
+
 
 #####################################################################
 ####################### PROGRAMA PRINCIPAL ##########################	
@@ -1233,12 +1375,13 @@ then
     exit 0
 fi
 
-Comprobaciones
-
+Comprobaciones_cfg
         #-d es el delimitador y -f es el campo
         JUGADORES=$(grep '^JUGADORES=' config.cfg | cut -d '=' -f 2)
         ESTRATEGIA=$(grep '^ESTRATEGIA=' config.cfg | cut -d '=' -f 2)
         LOG=$(grep '^LOG=' config.cfg | cut -d '=' -f 2)
+
+Comprobaciones_log
 
 while true
 do
@@ -1256,6 +1399,7 @@ do
             ;;
         [Ee])
             echo "ACCEDIENDO A ESTADISTICAS..."
+            estadisticas
             ;;
         [Ff])
             echo "ACCEDIENDO A CLASIFICACION..."
