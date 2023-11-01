@@ -1369,18 +1369,23 @@ if [ -f "$LOG" ]; then
     PARTIDA_MAS_CARTAS=""
 
     # Partida más corta
+    # Ordena el archivo por el campo 4 (tiempo total) y coge la primera línea (la más corta) y la guarda en la variable
     PARTIDA_MAS_CORTA=$(sort -t "|" -k 4 -n "$LOG" | head -n 1)
 
     # Partida más larga
+    # Ordena el archivo por el campo 4 (tiempo total) y coge la última línea (la más larga) y la guarda en la variable
     PARTIDA_MAS_LARGA=$(sort -t "|" -k 4 -n "$LOG" | tail -n 1)
 
     # Partida con más rondas
+    # Ordena el archivo por el campo 5 (rondas) y coge la última línea (la que más rondas tiene) y la guarda en la variable
     PARTIDA_MAS_RONDAS=$(sort -t "|" -k 5 -n "$LOG" | tail -n 1)
 
     # Partida con menos rondas
+    # Ordena el archivo por el campo 5 (rondas) y coge la primera línea (la que menos rondas tiene) y la guarda en la variable
     PARTIDA_MENOS_RONDAS=$(sort -t "|" -k 5 -n "$LOG" | head -n 1)
 
     # Partida con más puntos
+    # Ordena el archivo por el campo 7 (puntos) y coge la última línea (la que más puntos tiene) y la guarda en la variable
     PARTIDA_MAS_PUNTOS=$(sort -t "|" -k 7 -n "$LOG" | tail -n 1)
 
     # Partida con más cartas
