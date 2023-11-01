@@ -441,16 +441,16 @@ done
 HORA_FIN=$(date +%s)
 
 if [ "$VACIO" == "1" ]; then
-    echo "HAS GANADO LA PARTIDA JUGADOR 1"
+    echo "====== HAS GANADO LA PARTIDA JUGADOR 1 ======"
 fi
 if [ "$VACIO" == "2" ]; then
-    echo "HAS GANADO LA PARTIDA JUGADOR 2"
+    echo "====== HAS GANADO LA PARTIDA JUGADOR 2 ======"
 fi
 if [ "$VACIO" == "3" ]; then
-    echo "HAS GANADO LA PARTIDA JUGADOR 3"
+    echo "====== HAS GANADO LA PARTIDA JUGADOR 3 ======"
 fi
 if [ "$VACIO" == "4" ]; then
-    echo "HAS GANADO LA PARTIDA JUGADOR 4"
+    echo "====== HAS GANADO LA PARTIDA JUGADOR 4 ======"
 fi
 
 
@@ -477,7 +477,77 @@ return
 
 function turno_maquina {
 case $ESTRATEGIA in
-0)
+    0)
+        seleccion_secuencial
+    ;;
+    1)
+    for ((k=0;k<$JUGADORES;k++)); do
+        for ((i = 0; i < ${#CARTAS_JUGADOR[@]}; i++)); do
+            for ((j = i + 1; j < ${#CARTAS_JUGADOR[@]}; j++)); do
+                NUMERO=$(echo "${CARTAS_JUGADOR[i]}" | cut -d " " -f 1)
+                NUMERO_SIG=$(echo "${CARTAS_JUGADOR[j]}" | cut -d " " -f 1)
+
+                if [ -n "$NUMERO" ] && [ -n "$NUMERO_SIG" ] && [ "$NUMERO" -lt "$NUMERO_SIG" ]; then ########ERROR AQUI
+                  TEMP="${CARTAS_JUGADOR[i]}"
+                  CARTAS_JUGADOR[i]="${CARTAS_JUGADOR[j]}"
+                  CARTAS_JUGADOR[j]="$TEMP"
+                fi
+            done
+        done
+        case $TURNO in
+            2)
+                JUGADOR2=("${CARTAS_JUGADOR[@]}")
+                ;;
+            3)
+                JUGADOR3=("${CARTAS_JUGADOR[@]}")
+                ;;
+            4)
+                JUGADOR4=("${CARTAS_JUGADOR[@]}")
+                ;;
+        esac
+    done
+
+        seleccion_secuencial
+        
+    ;;
+    2)
+    for ((k=0;k<$JUGADORES;k++)); do
+        for ((i = 0; i < ${#CARTAS_JUGADOR[@]}; i++)); do
+            for ((j = i + 1; j < ${#CARTAS_JUGADOR[@]}; j++)); do
+                NUMERO=$(echo "${CARTAS_JUGADOR[i]}" | cut -d " " -f 1)
+                NUMERO_SIG=$(echo "${CARTAS_JUGADOR[j]}" | cut -d " " -f 1)
+
+                if [ -n "$NUMERO" ] && [ -n "$NUMERO_SIG" ] && [ "$NUMERO" -gt "$NUMERO_SIG" ]; then ########ERROR AQUI
+                  TEMP="${CARTAS_JUGADOR[i]}"
+                  CARTAS_JUGADOR[i]="${CARTAS_JUGADOR[j]}"
+                  CARTAS_JUGADOR[j]="$TEMP"
+                fi
+            done
+        done
+        case $TURNO in
+            2)
+                JUGADOR2=("${CARTAS_JUGADOR[@]}")
+                ;;
+            3)
+                JUGADOR3=("${CARTAS_JUGADOR[@]}")
+                ;;
+            4)
+                JUGADOR4=("${CARTAS_JUGADOR[@]}")
+                ;;
+        esac
+    done
+
+        seleccion_secuencial
+        
+    ;;
+    *)
+        echo "ERROR: ESTRATEGIA NO VÁLIDA"
+    ;;
+esac
+}
+
+function seleccion_secuencial 
+{
     for ((i = 0; i < $NUMERO_CARTAS_TOTAL && $TURNO_JUGADOR==$TURNO; i++)); do
         if [ ! -z "${CARTAS_JUGADOR[i]}" ]; then
             CARTA="${CARTAS_JUGADOR[i]}"
@@ -758,17 +828,6 @@ if [ "$PUSO_CARTA" == false ]; then
     echo "JUGADOR $TURNO PASA TURNO :("
     TURNO=$((TURNO + 1))
 fi
-;;
-    1)
-        echo "ESTRATEGIA 1"
-        ;;
-    2)
-        echo "ESTRATEGIA 2"
-        ;;
-    *)
-        echo "ERROR: ESTRATEGIA NO VÁLIDA"
-        ;;
-esac
 }
 
 function turno_usuario {
@@ -1142,7 +1201,7 @@ then
     echo
     echo "      Estrategia 0 Aleatorio: Los jugadores colocan automáticamente la primera carta que puedan colocar"
     echo "      Estrategia 1 Mayores: Los jugadores colocan la carta de mayor valor que puedan colocar para reducir el número de puntos restantes al final de la partida"
-    echo "      Estrategia 2 ..."
+    echo "      Estrategia 2 Menores: Los jugadores colocan la carta de menor valor que puedan colocar"
     echo
 
     read -p "Pulse una tecla para continuar..."
