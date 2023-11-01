@@ -252,6 +252,9 @@ OROS=("1 de oros" "2 de oros" "3 de oros" "4 de oros" "5 de oros" "6 de oros" "7
 }
 
 function mostrar_tablero {
+    if [ "$TURNO" == "1" ]; then
+        clear
+    fi
     case $JUGADORES in
         2)
             echo "-----------------------------------------------------------------------------------------"
@@ -1263,11 +1266,14 @@ function escribir_fichero {
 }
 
 function estadisticas {
-
-if [ -f "$LOG"  &&  -s "$LOG" ]; then
+if [ -f "$LOG" ]; then
+    if [ ! -s "$LOG" ]; then
+        echo "El archivo de registro '$LOG' esta vacio juega una partida para ver las estadisticas"
+        return
+    fi
     # Número total de partidas jugadas según líneas
-    TOTAL_PARTIDAS=0
-    TOTAL_PARTIDAS=$(wc -l < "$LOG")
+    # grep -c . cuenta las líneas del archivo
+    TOTAL_PARTIDAS=$(grep -c . "$LOG")
 
     # Media de los tiempos de todas las partidas jugadas
     TOTAL_TIEMPO=0
@@ -1327,6 +1333,11 @@ if [ -f "$LOG"  &&  -s "$LOG" ]; then
         PORCENTAJE_GANADAS_4=$((VICTORIAS_JUGADOR_4 * 100 / PARTIDAS_JUGADOR_1))
 
     clear
+    echo
+    echo "      =========================="
+    echo "              ESTADISTICAS      "
+    echo "      =========================="
+    echo
 
     # Mostrar las estadísticas
     echo "Número total de partidas jugadas: $TOTAL_PARTIDAS"
@@ -1398,7 +1409,7 @@ do
             juego
             ;;
         [Ee])
-            echo "ACCEDIENDO A ESTADISTICAS..."
+            clear
             estadisticas
             ;;
         [Ff])
