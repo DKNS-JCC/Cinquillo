@@ -1339,7 +1339,6 @@ if [ -f "$LOG" ]; then
     echo "      =========================="
     echo
 
-    # Mostrar las estadísticas
     echo "Número total de partidas jugadas: $TOTAL_PARTIDAS"
     echo "Media de los tiempos de todas las partidas jugadas: $MEDIA_TIEMPO segundos"
     echo "Tiempo total invertido en todas las partidas: $TIEMPO_TOTAL segundos"
@@ -1351,6 +1350,80 @@ if [ -f "$LOG" ]; then
 else
     echo "El archivo de registro '$LOG' no existe o esta vacio"
 fi
+    echo
+    read -p "Pulse una tecla para continuar..."
+
+}
+
+function clasificacion {
+    PARTIDA_MAS_CORTA=""
+    PARTIDA_MAS_LARGA=""
+    PARTIDA_CON_MAS_RONDAS=""
+    PARTIDA_CON_MENOS_RONDAS=""
+    PARTIDA_CON_MAS_PUNTOS=""
+    PARTIDA_CON_MAS_CARTAS=""
+
+
+    while IFS= read -r linea; do
+        fecha=$(echo "$linea" | cut -d "|" -f 1)
+        hora=$(echo "$linea" | cut -d "|" -f 2)
+        jugadores=$(echo "$linea" | cut -d "|" -f 3)
+        rondas=$(echo "$linea" | cut -d "|" -f 4)
+        tiempo=$(echo "$linea" | cut -d "|" -f 5)
+        jugador_ganador=$(echo "$linea" | cut -d "|" -f 6)
+        puntos=$(echo "$linea" | cut -d "|" -f 7)
+        cartas=$(echo "$linea" | cut -d "|" -f 8)
+
+
+        if [[ -z $PARTIDA_MAS_CORTA || $tiempo -lt $TIEMPO_MAS_CORTO ]]; then
+            TIEMPO_MAS_CORTO=$tiempo
+            PARTIDA_MAS_CORTA="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
+        fi
+
+
+        if [[ -z $PARTIDA_MAS_LARGA || $tiempo -gt $TIEMPO_MAS_LARGO ]]; then
+            TIEMPO_MAS_LARGO=$tiempo
+            PARTIDA_MAS_LARGA="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
+        fi
+
+
+        if [[ -z $PARTIDA_CON_MAS_RONDAS || $rondas -gt $RONDAS_MAS_RONDAS ]]; then
+            RONDAS_MAS_RONDAS=$rondas
+            PARTIDA_CON_MAS_RONDAS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
+        fi
+
+
+        if [[ -z $PARTIDA_CON_MENOS_RONDAS || $rondas -lt $RONDAS_MENOS_RONDAS ]]; then
+            RONDAS_MENOS_RONDAS=$rondas
+            PARTIDA_CON_MENOS_RONDAS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
+        fi
+
+
+        if [[ -z $PARTIDA_CON_MAS_PUNTOS || $puntos -gt $PUNTOS_MAS_PUNTOS ]]; then
+            PUNTOS_MAS_PUNTOS=$puntos
+            PARTIDA_CON_MAS_PUNTOS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
+        fi
+
+
+        if [[ -z $PARTIDA_CON_MAS_CARTAS || $cartas -gt $CARTAS_MAS_CARTAS ]]; then
+            CARTAS_MAS_CARTAS=$cartas
+            PARTIDA_CON_MAS_CARTAS="$fecha|$hora|$jugadores|$rondas|$tiempo|$jugador_ganador|$puntos|$cartas"
+        fi
+    done < fichero.log
+
+    clear
+    echo
+    echo "      =========================="
+    echo "              CLASIFICACION     "
+    echo "      =========================="
+    echo
+
+    echo "Partida más corta          =>            $PARTIDA_MAS_CORTA"
+    echo "Partida más larga          =>            $PARTIDA_MAS_LARGA"
+    echo "Partida con más rondas     =>            $PARTIDA_CON_MAS_RONDAS"
+    echo "Partida con menos rondas   =>            $PARTIDA_CON_MENOS_RONDAS"
+    echo "Partida con más puntos     =>            $PARTIDA_CON_MAS_PUNTOS"
+    echo "Partida con más cartas para un jugador   $PARTIDA_CON_MAS_CARTAS"
     echo
     read -p "Pulse una tecla para continuar..."
 
@@ -1413,7 +1486,8 @@ do
             estadisticas
             ;;
         [Ff])
-            echo "ACCEDIENDO A CLASIFICACION..."
+            clear
+            clasificacion
             ;;
         [Ss])
             exit 0
