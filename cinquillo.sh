@@ -133,7 +133,7 @@ function configuracion
                 ;;
             *)
                 clear
-                echo "Seleccione 1, 2, 3, 4 o 5"
+                echo "Seleccione 1, 2, 3 o 4"
                 ;;
         esac
     done
@@ -1408,11 +1408,12 @@ if [ -f "$LOG" ]; then
 
     # Partida más larga
     # Ordena el archivo por el campo 4 (tiempo total) y coge la última línea (la más larga) y la guarda en la variable
-    PARTIDA_MAS_LARGA=$(sort -t "|" -k 4 -n "$LOG" | tail -n 1)
+    PARTIDA_MAS_LARGA=$(sort -t "|" -k 4 -n -r "$LOG" | head -n 1)
+    
 
     # Partida con más rondas
     # Ordena el archivo por el campo 5 (rondas) y coge la última línea (la que más rondas tiene) y la guarda en la variable
-    PARTIDA_MAS_RONDAS=$(sort -t "|" -k 5 -n "$LOG" | tail -n 1)
+    PARTIDA_MAS_RONDAS=$(sort -t "|" -k 5 -n -r "$LOG" | head -n 1)
 
     # Partida con menos rondas
     # Ordena el archivo por el campo 5 (rondas) y coge la primera línea (la que menos rondas tiene) y la guarda en la variable
@@ -1420,7 +1421,7 @@ if [ -f "$LOG" ]; then
 
     # Partida con más puntos
     # Ordena el archivo por el campo 7 (puntos) y coge la última línea (la que más puntos tiene) y la guarda en la variable
-    PARTIDA_MAS_PUNTOS=$(sort -t "|" -k 7 -n "$LOG" | tail -n 1)
+    PARTIDA_MAS_PUNTOS=$(sort -t "|" -k 7 -n -r "$LOG" | head -n 1)
 
     # Partida con más cartas
     PARTIDA_MAS_CARTAS=$(cut -d "|" -f 8 "$LOG" | sort -t "-" -k 1 -n | tail -n 1) 
