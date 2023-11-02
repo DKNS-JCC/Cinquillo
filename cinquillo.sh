@@ -91,7 +91,6 @@ function configuracion
                         echo "Introduce la ruta del archivo:"
                         read RUTA
                         if [[ -f $RUTA ]]; then
-                            Comprobaciones_log
                             LOG=$RUTA
                             echo JUGADORES=$JUGADORES > config.cfg
                             echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
@@ -344,7 +343,7 @@ printf "%-30s %-30s %-30s %-30s\n" "${indice}) ${JUGADOR1[i]}" "${indice}) ${JUG
         PALO_ESPADA="${ESPADAS[i]}"
         PALO_ORO="${OROS[i]}"
 
-        printf "%-20s %-20s %-20s %-20s\n" "$PALO_BASTO" "$PALO_ORO" "$PALO_ESPADA" "$PALO_COPA"
+        printf "%-20s %-20s %-20s %-s\n" "$PALO_BASTO" "$PALO_ORO" "$PALO_ESPADA" "$PALO_COPA"
     done
 }
 
@@ -424,7 +423,7 @@ function buscar_5oros {
 
 
 function juego {
-    HORA_INICIO=$(date +%s)
+    SECONDS=0
     clear
     crear_baraja
     barajar
@@ -494,7 +493,7 @@ done
 
 ########################################################### FINAL DE PARTIDA #####################################################################
 
-HORA_FIN=$(date +%s)
+HORA_FIN=$SECONDS
 
 if [ "$VACIO" == "1" ]; then
     echo
@@ -1292,12 +1291,12 @@ function contar_cartas {
 function escribir_fichero {
     FECHA=$(date +%d%m%Y)
     HORA=$(date +%H:%M:%S)
-    TIEMPO_PARTIDA=$((HORA_FIN - HORA_INICIO))
+    TIEMPO_PARTIDA=$SECONDS
     RONDAS=$((CONTADOR_TURNOS / JUGADORES))
     GANADOR="$VACIO"
     PUNTOS="$PUNTOS_GANADOR"
     contar_cartas
-    echo "$FECHA|$HORA|$JUGADORES|$TIEMPO_PARTIDA|$RONDAS|$GANADOR|$PUNTOS|$NUMERO_CARTAS_JUGADOR1-$NUMERO_CARTAS_JUGADOR2-$NUMERO_CARTAS_JUGADOR3-$NUMERO_CARTAS_JUGADOR4" >> "$LOG"   
+echo "$FECHA|$HORA|$JUGADORES|$TIEMPO_PARTIDA|$RONDAS|$GANADOR|$PUNTOS|$NUMERO_CARTAS_JUGADOR1-$NUMERO_CARTAS_JUGADOR2-$NUMERO_CARTAS_JUGADOR3-$NUMERO_CARTAS_JUGADOR4" >> "$LOG"   
 }
 
 function estadisticas {
@@ -1512,6 +1511,7 @@ do
             exit 0
             ;;
         *)
+            clear
             echo "Opcion incorrecta"
             ;;
     esac
