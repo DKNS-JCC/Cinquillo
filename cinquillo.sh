@@ -79,20 +79,55 @@ function configuracion
                 ;;
             3)
                 clear
-                
-                echo "Introduce el nombre del archivo:"
-                read ARCHIVO                
-                if [[ -f $ARCHIVO ]]; then
-                    Comprobaciones_log
-                    LOG="$(pwd)/$ARCHIVO"
-                    echo JUGADORES=$JUGADORES > config.cfg
-                    echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
-                    echo LOG=$LOG >> config.cfg
-                else
-                    echo "El archivo \"$nombre_archivo\" no existe o no es un archivo regular."
-                    echo "LOG actualizado a $LOG"
-                fi                   
-                ;;
+                echo "Elige una opcion para el LOG:"
+                echo "1) Introducir ruta del archivo"
+                echo "2) Introducir nombre del fichero (mismo directorio)"
+                read opcion_log
+            while [[ "$opcion_log" != "1" || "$opcion_log" != "2" ]]
+            do
+            clear
+                case $opcion_log in
+                    1)
+                        echo "Introduce la ruta del archivo:"
+                        read RUTA
+                        if [[ -f $RUTA ]]; then
+                            Comprobaciones_log
+                            LOG=$RUTA
+                            echo JUGADORES=$JUGADORES > config.cfg
+                            echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
+                            echo LOG=$LOG >> config.cfg
+                            break
+                        else
+                            echo "El archivo \"$RUTA\" no es un fichero."
+                            echo "LOG actualizado a $LOG"
+                            break
+                        fi
+                        break
+                        ;;
+                    2)
+                        echo "Introduce el nombre del archivo:"
+                        read ARCHIVO            
+                        if [[ -f $ARCHIVO ]]; then
+                            Comprobaciones_log
+                            LOG="$(pwd)/$ARCHIVO"
+                            echo JUGADORES=$JUGADORES > config.cfg
+                            echo ESTRATEGIA=$ESTRATEGIA >> config.cfg
+                            echo LOG=$LOG >> config.cfg
+                            break
+                        else
+                            echo "\"$ERCHIVO\" no existe o no es un archivo."
+                            echo "LOG actualizado a $LOG"
+                            break
+                        fi
+                        break
+                        ;;
+                    *)
+                        echo "Seleccione 1 o 2"
+                        ;;                   
+                esac
+            done
+            ;;
+            
             4)
                 clear
                 break
@@ -1389,8 +1424,8 @@ if [ -f "$LOG" ]; then
     PARTIDA_MAS_PUNTOS=$(sort -t "|" -k 7 -n "$LOG" | tail -n 1)
 
     # Partida con más cartas
-    PARTIDA_MAS_CARTAS=$(awk -F '|' '{split($8, a, "-"); max = a[1]; for (i = 2; i <= 4; i++) if (a[i] > max) max = a[i]} max > maxval {maxval = max; maxline = $0} END {print maxline}' fichero.log)
-
+    PARTIDA_MAS_CARTAS=$(cut -d "|" -f 8 "$LOG" | sort -t "-" -k 1 -n | tail -n 1) 
+        
 
 
     clear
