@@ -566,34 +566,38 @@ case $ESTRATEGIA in
         esac
     done
 
-        seleccion_secuencial
-        
+        seleccion_secuencial        
     ;;
     2)
-    for ((k=0;k<$JUGADORES;k++)); do
+    hecho=$((JUGADORES - 1))
+    while [ $hecho -ne 0 ]; do
         for ((i = 0; i < ${#CARTAS_JUGADOR[@]}; i++)); do
             for ((j = i + 1; j < ${#CARTAS_JUGADOR[@]}; j++)); do
                 NUMERO=$(echo "${CARTAS_JUGADOR[i]}" | cut -d " " -f 1)
                 NUMERO_SIG=$(echo "${CARTAS_JUGADOR[j]}" | cut -d " " -f 1)
 
-                if [ -n "$NUMERO" ] && [ -n "$NUMERO_SIG" ] && [ "$NUMERO" -gt "$NUMERO_SIG" ]; then ########ERROR AQUI
+                if [ -n "$NUMERO" ] && [ -n "$NUMERO_SIG" ] && [ "$NUMERO" -gt "$NUMERO_SIG" ]; then
                   TEMP="${CARTAS_JUGADOR[i]}"
                   CARTAS_JUGADOR[i]="${CARTAS_JUGADOR[j]}"
                   CARTAS_JUGADOR[j]="$TEMP"
                 fi
             done
+
+    
+            case $TURNO in
+                2)
+                    JUGADOR2=("${CARTAS_JUGADOR[@]}")
+                    ;;
+                3)
+                    JUGADOR3=("${CARTAS_JUGADOR[@]}")
+                    ;;
+                4)
+                    JUGADOR4=("${CARTAS_JUGADOR[@]}")
+                    ;;
+            esac
         done
-        case $TURNO in
-            2)
-                JUGADOR2=("${CARTAS_JUGADOR[@]}")
-                ;;
-            3)
-                JUGADOR3=("${CARTAS_JUGADOR[@]}")
-                ;;
-            4)
-                JUGADOR4=("${CARTAS_JUGADOR[@]}")
-                ;;
-        esac
+        hecho=$((hecho - 1))
+        break
     done
 
         seleccion_secuencial
@@ -1477,6 +1481,14 @@ then
     read -p "Pulse una tecla para continuar..."
     exit 0
 fi
+#Si la funcion se invoca con un parametro diferente a -g se avisa que solo puede usar -g
+if [[ "$1" != "" && "$1" != "-g" ]]
+then
+    echo "Solo se puede usar -g"
+    exit 1
+fi
+
+
 
 Comprobaciones_cfg
         #-d es el delimitador y -f es el campo
