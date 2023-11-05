@@ -546,7 +546,7 @@ case $ESTRATEGIA in
                 NUMERO=$(echo "${CARTAS_JUGADOR[i]}" | cut -d " " -f 1)
                 NUMERO_SIG=$(echo "${CARTAS_JUGADOR[j]}" | cut -d " " -f 1)
 
-                if [ -n "$NUMERO" ] && [ -n "$NUMERO_SIG" ] && [ "$NUMERO" -lt "$NUMERO_SIG" ]; then ########ERROR AQUI
+                if [ -n "$NUMERO" ] && [ -n "$NUMERO_SIG" ] && [ "$NUMERO" -lt "$NUMERO_SIG" ]; then
                   TEMP="${CARTAS_JUGADOR[i]}"
                   CARTAS_JUGADOR[i]="${CARTAS_JUGADOR[j]}"
                   CARTAS_JUGADOR[j]="$TEMP"
@@ -1085,7 +1085,7 @@ if [ "$INDICE" -ge 1 ] && [ "$INDICE" -le "${NUMERO_CARTAS_JUGADOR1}" ]; then
             #clear
             mostrar_tablero
 
-        elif [[ ! "$NUMERO" == "5" && ! "$NUMERO" == "10" ]]; then #############################
+        elif [[ ! "$NUMERO" == "5" && ! "$NUMERO" == "10" ]]; then 
             case $PALO in
             "bastos")
                 for ((j = 0; j < 10; j++)); do
@@ -1481,7 +1481,7 @@ then
     read -p "Pulse una tecla para continuar..."
     exit 0
 fi
-#Si la funcion se invoca con un parametro diferente a -g se avisa que solo puede usar -g
+
 if [[ "$1" != "" && "$1" != "-g" ]]
 then
     echo "Solo se puede usar -g"
@@ -1491,7 +1491,7 @@ fi
 
 
 Comprobaciones_cfg
-        #-d es el delimitador y -f es el campo
+
         JUGADORES=$(grep '^JUGADORES=' config.cfg | cut -d '=' -f 2)
         ESTRATEGIA=$(grep '^ESTRATEGIA=' config.cfg | cut -d '=' -f 2)
         LOG=$(grep '^LOG=' config.cfg | cut -d '=' -f 2)
